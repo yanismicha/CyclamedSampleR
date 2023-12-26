@@ -4,47 +4,87 @@
 # CyclamedSampleR
 
 <!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of CyclamedSampleR is to …
+L’objectif de cette interface est de permettre à **Cyclamed**
+d’optimiser leur étude annuelle d’échantillonnage.
 
 ## Installation
 
-You can install the development version of CyclamedSampleR like so:
+Vous pouvez installer la version en développement de la façon suivante:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+devtools::install_github("yanismicha/CyclamedSampleR")
 ```
 
-## Example
+## chargement
 
-This is a basic example which shows you how to solve a common problem:
+Pour charger le package il suffit d’écrire la commande suivante:
 
 ``` r
 library(CyclamedSampleR)
-## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+## Lancement de l’application
+
+Pour lancer l’application, lancez ensuite la commande suivante:
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+CyclamedSampleR::run_app()
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
+## Interface
 
-You can also embed plots, for example:
+L’interface se décompose en trois principaux onglets:
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+- onglet `data`
+- onglet `random`
+- onglet `analyse statistique`
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+### onglet data
+
+cette onglet permet principalement de pouvoir visualiser le jeu de
+donnée avec le package `reactable` permettant également de faire des
+recherches spécifiques par variables et de trier de manière très
+simpliste. Un bouton est également présent permettant d’ajouter
+directement un site au jeu de donnée.
+
+### onglet random
+
+cet onglet permet de tirer les cinq sites dans le cadre de l’étude
+d’échantillonnage. Quelques fonctionnalités sont disponibles en plus du
+tirage:
+
+- la possibilité de relancer le tirage plusieurs fois avec remise pour
+  tous les sites.
+- Possibilité de relancer le tirage plusieurs fois avec remise pour un
+  ou plusieurs sites spécifiques
+- Possibilité de choisir directement dans la liste des classes.(Non
+  conseillé)
+- Information sur les sites choisis
+- Indications des sites avec ou sans compacteurs.
+- Indication des sites Outre-Mer.
+- Affichage d’informations sur les classes: intervalles de tonnage des
+  DIM
+
+les différentes classes sont récupérés avec la fonction `stratopt`:
+
+``` r
+library(CyclamedSampleR)
+#> Warning: remplacement de l'importation précédente 'shinyWidgets::alert' par
+#> 'shinyjs::alert' lors du chargement de 'CyclamedSampleR'
+#> Warning: remplacement de l'importation précédente 'reactablefmtr::html' par
+#> 'shinyjs::html' lors du chargement de 'CyclamedSampleR'
+#> Warning: remplacement de l'importation précédente 'shiny::runExample' par
+#> 'shinyjs::runExample' lors du chargement de 'CyclamedSampleR'
+classes <- stratopt(Tonnage)
+```
+
+    #> [1] "Nombre de sites pour la classe  1 : 37"
+    #> [1] "Nombre de sites pour la classe  2 : 52"
+    #> [1] "Nombre de sites pour la classe  3 : 45"
+    #> [1] "Nombre de sites pour la classe  4 : 31"
+    #> [1] "Nombre de sites pour la classe  5 : 23"
