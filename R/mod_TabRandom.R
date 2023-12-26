@@ -52,7 +52,7 @@ mod_TabRandom_ui <- function(id){
 mod_TabRandom_server <- function(id,r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-
+    # tout ce qui est relatif aux cadres est dans un module à part nomme div_classe
     observe({
       # on stocke la valeur du popup confirmation pour l'utiliser dans le module divClasse
       r$random <- input$myconfirmation2

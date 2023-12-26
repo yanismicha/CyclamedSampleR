@@ -60,8 +60,17 @@ mod_divClasse_server <- function(id,r){
 
       # maj du choix des sites par classe
       updatePickerInput(session,"choix1",choices =  r$classe[[paste0("classe",nb)]],choicesOpt = list(
-        icon = ifelse(r$data[r$data$Site %in% r$classe[[paste0("classe",nb)]],"Compacteur"]==1,"glyphicon-trash","")))
-
+        icon =  ifelse(
+          r$data[r$data$Site %in% r$classe[[paste0("classe", nb)]], "Compacteur"] == 1,
+          "glyphicon-trash",
+          ifelse(
+            r$data[r$data$Site %in% r$classe[[paste0("classe", nb)]], "Region"] %in%
+              c("La Reunion", "Guadeloupe", "Martinique", "Saint Martin", "Mayotte", "Guyane"),
+            "glyphicon-globe",  # Utilise l'icône "globe" pour les territoires d'outre-mer
+            ""
+          )
+        )
+      ))
 
       # affichage de l'icone compacteur
       if(r[[paste0("site",nb)]]!= "" && r$data[r$data$Site == r[[paste0("site",nb)]],"Compacteur"]==1){
