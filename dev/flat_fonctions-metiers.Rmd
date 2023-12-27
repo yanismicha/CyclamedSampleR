@@ -7,6 +7,7 @@ editor_options:
 
 ```{r development, include=FALSE}
 library(testthat)
+
 ```
 
 # Fonctions métiers de mon app
@@ -79,11 +80,48 @@ data("Tonnage")
 stratopt(Tonnage)$classe1
 ```
 
-```{r tests-stratopt}
-test_that("stratopt works", {
-  expect_equal(object = length(stratopt(Tonnage)), expected = 5)
+
+
+
+```{r function-isOutreMer}
+#' isOutreMer
+#' permet de connaitre les sites situés en territoires outre mers
+#'
+#' @param data un dataframe 
+#' @param classes la liste des classes des sites
+#' @param nb le numero de la classe
+#'
+#' @return une liste de boolean, true si le site se situe en territoire outre mer
+#' @export
+#'
+isOutreMer <- function(data,classes=NULL,nb=1){
+  if(is.null(classes)){# cas général
+    data[, "Region"] %in%
+    c("La Reunion", "Guadeloupe ", "Martinique ", "Saint Martin", "Mayotte", "Guyane")
+  }
+  else{# cas d'une classe specifique
+    data[data$Site %in% classes[[paste0("classe", nb)]], "Region"] %in%
+      c("La Reunion", "Guadeloupe ", "Martinique ", "Saint Martin", "Mayotte", "Guyane")
+  }
+}
+```
+
+```{r examples-function_isOutreMer}
+isOutreMer(Tonnage)
+classes <- stratopt(Tonnage)
+isOutreMer(Tonnage,classes,1)
+```
+
+```{r tests-isOutreMer}
+test_that("isOutreMer works", {
+  expect_equal(object = length(isOutreMer(Tonnage)), expected = nrow(Tonnage))
 })
 ```
+
+
+
+
+
 
 
 ```{r development-inflate, eval=FALSE}

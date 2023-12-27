@@ -20,7 +20,8 @@ Imports:
     shinydashboard,
     shinyjs,
     shinyWidgets,
-    stratification
+    stratification,
+    viridis
 Suggests: 
     knitr,
     rmarkdown,
