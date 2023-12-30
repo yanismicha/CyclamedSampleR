@@ -21,16 +21,17 @@ mod_divClasse_ui <- function(id){
               span(class = "glyphicon glyphicon-trash") #icone compacteur
             )
           ),
-          textOutput(ns("site1")), # SITE tire
-          shinyjs::hidden(
+          htmlOutput(ns("site1")), # SITE tire
+          #shinyjs::hidden(
             pickerInput( # choix d'un site parmi la classe
               ns("choix1"),
               "Choix d'un autre site:",
               choices = NULL,
-              options = list(title = "Sites: "),
+              options = pickerOptions(#title = "Sites:  ",
+                maxOptions = 1),
               multiple = TRUE
-            )
-          ),
+            ),
+          #),
           prettySwitch(# bouton pour garder le site ou non
             inputId = ns("Id1"),
             label = "garder le site",
@@ -53,12 +54,10 @@ mod_divClasse_server <- function(id,r){
     nb <- substr(id, nchar(id), nchar(id))
 
     observe({
-      if(input$Id1 == FALSE) # affichage du choix de site
-        shinyjs::show("choix1")
-      else
-        shinyjs::hide("choix1")
 
       # maj du choix des sites par classe
+      if(input$Id1){
+        #shinyjs::hide("choix1")
       updatePickerInput(session,"choix1",choices =  r$classe[[paste0("classe",nb)]],choicesOpt = list(
         content = ifelse(
           isOutreMer(Tonnage, r$classe, nb),
@@ -68,22 +67,48 @@ mod_divClasse_server <- function(id,r){
                  sprintf("<span class='label label-%s'>%s</span>", "primary",r$classe[[paste0("classe", nb)]])
           )
         )
-      ))
+      ),
+      #choix du site tiré
+      selected =  ifelse(r[[paste0("site",nb)]]== "",NULL,r[[paste0("site",nb)]])
+      )
+      }
+      # else
+      #   shinyjs::show("choix1")
+
 
       # affichage de l'icone compacteur
-      if(r[[paste0("site",nb)]]!= "" && r$data[r$data$Site == r[[paste0("site",nb)]],"Compacteur"]==1){
-        shinyjs::show("trash-icon")
-      }
-      else{
-        shinyjs::hide("trash-icon")
-      }
+      # if(r[[paste0("site",nb)]]!= "" && r$data[r$data$Site == r[[paste0("site",nb)]],"Compacteur"]==1){
+      #   shinyjs::show("trash-icon")
+      # }
+      # else{
+      #   shinyjs::hide("trash-icon")
+      # }
 
     })
 
     # affichage du site tire
-     output$site1 <- renderText({
-       r[[paste0("site",nb)]]
-     })
+     output$site1 <- renderUI({
+       #r[[paste0("site",nb)]]
+       if(is.null(input$choix1))
+          ""
+       else{
+         # on recupere l'indice du site tiré
+         indice_site <- match(input$choix1, r$classe[[paste0("classe",nb)]])
+         #  cas du site situé en outre mer
+         if (!is.na(indice_site) && isOutreMer(Tonnage, r$classe, nb)[indice_site])
+           res <- paste("<span class='label label-info'>",input$choix1, "(Outre Mer)</span>")
+
+         # cas du site avec compacteur
+         else if (r$data[r$data$Site ==input$choix1,"Compacteur"]== 1)
+           res <- paste("<span class='label label-danger'><span class='glyphicon glyphicon-trash'></span>", input$choix1, "</span>")
+
+         #cas du site classique
+         else
+           res <- paste("<span class='label label-primary'>",input$choix1, "</span>")
+         HTML(res)
+       }
+
+        })
 
 
      # tirage
