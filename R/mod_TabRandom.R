@@ -30,15 +30,17 @@ mod_TabRandom_ui <- function(id){
           ),
           mainPanel(h1("Sites:"),shinyjs::useShinyjs(),
                     # cadres
-                    h3(style = "margin-top: 0;", "Classe 1:"),
+                    tags$h3(
+                      HTML("Classe 1: <span id='info_icon' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                    ),
                     mod_divClasse_ui("cadre1"),
-                    h3(style = "margin-top: 0;", "Classe 2:"),
+                    #h3(style = "margin-top: 0;", "Classe 2:"),
                     mod_divClasse_ui("cadre2"),
-                    h3(style = "margin-top: 0;", "Classe 3:"),
+                    #h3(style = "margin-top: 0;", "Classe 3:"),
                     mod_divClasse_ui("cadre3"),
-                    h3(style = "margin-top: 0;", "Classe 4:"),
+                    #h3(style = "margin-top: 0;", "Classe 4:"),
                     mod_divClasse_ui("cadre4"),
-                    h3(style = "margin-top: 0;", "Classe 5:"),
+                    #h3(style = "margin-top: 0;", "Classe 5:"),
                     mod_divClasse_ui("cadre5")
 
           )
@@ -56,7 +58,21 @@ mod_TabRandom_server <- function(id,r){
     observe({
       # on stocke la valeur du popup confirmation pour l'utiliser dans le module divClasse
       r$random <- input$myconfirmation2
-    })
+
+
+      minTonnage <- min(r$data[r$data$Site %in% r$classe$classe1,]$Tonnages.DIM)
+      maxTonnage <- max(r$data[r$data$Site %in% r$classe$classe1,]$Tonnages.DIM)
+      minSite <- r$data[r$data$Tonnages.DIM == minTonnage,"Site"]
+      maxSite <- r$data[r$data$Tonnages.DIM == maxTonnage,"Site"]
+      runjs(
+        paste0("$('#info_icon').popover({
+      content: 'Information sur la classe:<br>minTonnage: ",minSite,":", minTonnage, "<br>maxTonnage: ",maxSite,":",maxTonnage, "',
+      placement: 'right',
+      trigger: 'hover',
+      html: true
+    });")
+      )
+      })
 
     # création d'un popup confirmation lorsque l'on appui sur le bouton
     observeEvent(input$randall,{

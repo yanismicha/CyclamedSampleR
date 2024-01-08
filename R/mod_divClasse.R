@@ -10,6 +10,9 @@
 mod_divClasse_ui <- function(id){
   ns <- NS(id)
   div(style = "margin-bottom: 20px;", #espacement entre cadres
+      # tags$h3(id = ns("iconpop",
+      #   HTML(paste("Classe",substr(id, nchar(id), nchar(id))),": <span id='", ns("info_icon"), "' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+      # ),
       div(
         id = ns("cadre1"),
         style = "padding:4px; border:4px solid #e0e0e0;", #esthetique cadre exterieur
@@ -32,12 +35,14 @@ mod_divClasse_ui <- function(id){
               multiple = TRUE
             ),
           #),
-          prettySwitch(# bouton pour garder le site ou non
-            inputId = ns("Id1"),
-            label = "garder le site",
-            status = "success",
-            value = FALSE,
-            fill = TRUE
+          shinyjs::disabled(
+            prettySwitch(# bouton pour garder le site ou non
+              inputId = ns("Id1"),
+              label = "garder le site",
+              status = "success",
+              value = FALSE,
+              fill = TRUE
+            )
           )
         )
       )
@@ -84,11 +89,12 @@ mod_divClasse_server <- function(id,r){
       #   shinyjs::hide("trash-icon")
       # }
 
+
+
     })
 
     # affichage du site tire
      output$site1 <- renderUI({
-       #r[[paste0("site",nb)]]
        if(is.null(input$choix1))
           ""
        else{
@@ -114,6 +120,7 @@ mod_divClasse_server <- function(id,r){
      # tirage
       observeEvent(r$random, {
         if (isTRUE(r$random)){
+          shinyjs::enable("Id1")
           if(input$Id1){r[[paste0("site",nb)]]}
           else {
             nouvelle_valeur <- sample(r$classe[[paste0("classe",nb)]], 1, replace = FALSE)
@@ -121,6 +128,7 @@ mod_divClasse_server <- function(id,r){
           }
           updatePrettySwitch(session,"Id1",value=TRUE)
         }
+
       })
 
 
