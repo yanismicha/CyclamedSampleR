@@ -31,15 +31,27 @@ mod_TabRandom_ui <- function(id){
           mainPanel(h1("Sites:"),shinyjs::useShinyjs(),
                     # cadres
                     tags$h3(
-                      HTML("Classe 1: <span id='info_icon' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                      HTML("Classe 1: <span id='info_icon1' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                     ),
                     mod_divClasse_ui("cadre1"),
+                    tags$h3(
+                      HTML("Classe 2: <span id='info_icon2' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                    ),
                     #h3(style = "margin-top: 0;", "Classe 2:"),
                     mod_divClasse_ui("cadre2"),
+                    tags$h3(
+                      HTML("Classe 3: <span id='info_icon3' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                    ),
                     #h3(style = "margin-top: 0;", "Classe 3:"),
                     mod_divClasse_ui("cadre3"),
+                    tags$h3(
+                      HTML("Classe 4: <span id='info_icon4' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                    ),
                     #h3(style = "margin-top: 0;", "Classe 4:"),
                     mod_divClasse_ui("cadre4"),
+                    tags$h3(
+                      HTML("Classe 5: <span id='info_icon5' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                    ),
                     #h3(style = "margin-top: 0;", "Classe 5:"),
                     mod_divClasse_ui("cadre5")
 
@@ -59,19 +71,21 @@ mod_TabRandom_server <- function(id,r){
       # on stocke la valeur du popup confirmation pour l'utiliser dans le module divClasse
       r$random <- input$myconfirmation2
 
-
-      minTonnage <- min(r$data[r$data$Site %in% r$classe$classe1,]$Tonnages.DIM)
-      maxTonnage <- max(r$data[r$data$Site %in% r$classe$classe1,]$Tonnages.DIM)
-      minSite <- r$data[r$data$Tonnages.DIM == minTonnage,"Site"]
-      maxSite <- r$data[r$data$Tonnages.DIM == maxTonnage,"Site"]
-      runjs(
-        paste0("$('#info_icon').popover({
-      content: 'Information sur la classe:<br>minTonnage: ",minSite,":", minTonnage, "<br>maxTonnage: ",maxSite,":",maxTonnage, "',
-      placement: 'right',
-      trigger: 'hover',
-      html: true
-    });")
-      )
+      ## informations popups pour chaque classe ##
+      for(i in 1:5){
+        minTonnage <- min(r$data[r$data$Site %in% r$classe[[paste0("classe",i)]],]$Tonnages.DIM)
+        maxTonnage <- max(r$data[r$data$Site %in% r$classe[[paste0("classe",i)]],]$Tonnages.DIM)
+        minSite <- r$data[r$data$Tonnages.DIM == minTonnage,"Site"][[1]]
+        maxSite <- r$data[r$data$Tonnages.DIM == maxTonnage,"Site"][[1]]
+        runjs(
+          paste0("$('#info_icon", i, "').popover({
+            content: 'Information sur la classe ", i, ":<br>minTonnage: ", minSite, ":", minTonnage, "<br>maxTonnage: ", maxSite, ":", maxTonnage, "',
+            placement: 'right',
+            trigger: 'hover',
+            html: true
+          });")
+        )
+      }
       })
 
     # création d'un popup confirmation lorsque l'on appui sur le bouton
