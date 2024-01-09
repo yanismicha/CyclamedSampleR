@@ -92,7 +92,8 @@ mod_TabRandom_server <- function(id,r){
     observeEvent(input$randall,{
       confirmSweetAlert(
         session = session, inputId = "myconfirmation2", type = "info",
-        title = "Etes vous sur de vouloir réaliser un tirage des sites?", danger_mode = TRUE
+        title = "Etes vous sur de vouloir réaliser un tirage des sites?",
+        danger_mode = TRUE,btn_labels = c("Non", "Oui")
       )
 
     })

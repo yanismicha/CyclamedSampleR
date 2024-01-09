@@ -75,7 +75,8 @@ mod_TabData_server <- function(id,r){
     observeEvent(input$newRow,{
       confirmSweetAlert(
         session = session, inputId = "myconfirmation", type = "info",
-        title = "êtes vous sur de vouloir rajouter cette nouvelle ligne?", danger_mode = TRUE
+        title = "êtes vous sur de vouloir rajouter cette nouvelle ligne?",
+        danger_mode = TRUE,btn_labels = c("Non", "Oui")
       )
 
     })
