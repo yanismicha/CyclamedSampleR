@@ -17,6 +17,7 @@ Imports:
     reactable,
     reactablefmtr,
     shiny (>= 1.7.5),
+    shinyBS,
     shinydashboard,
     shinyjs,
     shinyWidgets,
