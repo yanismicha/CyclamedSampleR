@@ -9,44 +9,74 @@
 #' @importFrom shiny NS tagList
 mod_divClasse_ui <- function(id){
   ns <- NS(id)
-  div(style = "margin-bottom: 20px;", #espacement entre cadres
+  #div(style = "margin-bottom: 20px;", #espacement entre cadres
       # tags$h3(id = ns("iconpop",
       #   HTML(paste("Classe",substr(id, nchar(id), nchar(id))),": <span id='", ns("info_icon"), "' class='glyphicon glyphicon-info-sign custom-icon'></span>")
       # ),
+      #div(
+       # style = "padding: 10px 20px; border-radius: 15px; box-shadow: 0 0 0 transparent, 0 0 0 transparent, 6px 4px 25px #d6d6d6;", #esthetique cadre exterieur
       div(
         id = ns("cadre1"),
-        style = "padding:4px; border:4px solid #e0e0e0;", #esthetique cadre exterieur
-        div(
-          style = "padding:3px; background-color:#D7EAB6;", # esthetique cadre interieur
-          shinyjs::hidden( #permet de cacher le cadre en amont
-            h3(id = ns("trash-icon"),
-              style = "margin-top: 0; color: #ff3924; float:right;",#emplacement et style icone
-              span(class = "glyphicon glyphicon-trash") #icone compacteur
+        #style = "padding: 10px 20px; border-radius: 40px; box-shadow: 0 0 0 transparent, 0 0 0 transparent, 6px 4px 25px #d6d6d6;", # esthetique cadre interieur
+        # shinyjs::hidden( #permet de cacher le cadre en amont
+        #   h3(id = ns("trash-icon"),
+        #     style = "margin-top: 0; color: #ff3924; float:right;",#emplacement et style icone
+        #     span(class = "glyphicon glyphicon-trash") #icone compacteur
+        #   )
+        # ),
+        fluidRow(
+          column(
+            width = 12,
+            align = "center",
+            htmlOutput(ns("site1"), style = "font-size: 20px;margin-bottom: 30px;") # Vous pouvez ajuster la taille de la police selon vos besoins
+          )
+        ),
+        #htmlOutput(ns("site1")), # SITE tire
+        #shinyjs::hidden(
+        fluidRow(
+          column(
+            width = 2,
+            pickerInput(
+              inputId = ns("choix1"),
+              #label = "Choix d'un autre site:",
+              choices = NULL,
+              options = pickerOptions(
+                  # title = "Sites:  ",
+                  maxOptions = 1,
+                  noneSelectedText = "Choix site",
+                  header = paste("Choix Site classe",substr(id, nchar(id), nchar(id)),":"),
+                  liveSearch = TRUE,
+                  liveSearchNormalize = TRUE,
+                  noneResultsText= "Aucun résultat pour: {0}",
+                  showContent=FALSE,
+                  showIcon=FALSE,
+                  size=10,
+                  style = "dropdown"
+              ),
+              multiple = TRUE,
+              width = "100px"
             )
           ),
-          htmlOutput(ns("site1")), # SITE tire
-          #shinyjs::hidden(
-            pickerInput( # choix d'un site parmi la classe
-              ns("choix1"),
-              "Choix d'un autre site:",
-              choices = NULL,
-              options = pickerOptions(#title = "Sites:  ",
-                maxOptions = 1),
-              multiple = TRUE
+          column(
+            width = 2,
+            offset = ifelse(id == "cadre5",8,6),
+            shinyjs::disabled(
+              prettySwitch(
+                # bouton pour garder le site ou non
+                inputId = ns("Id1"),
+                label = NULL,
+                status = "success",
+                value = FALSE,
+                fill = TRUE,
+              )
             ),
-          #),
-          shinyjs::disabled(
-            prettySwitch(# bouton pour garder le site ou non
-              inputId = ns("Id1"),
-              label = "garder le site",
-              status = "success",
-              value = FALSE,
-              fill = TRUE
-            )
+            "garder le site",
           )
         )
       )
-  )
+
+      #)
+  #)
 }
 
 #' divClasse Server Functions
@@ -60,15 +90,18 @@ mod_divClasse_server <- function(id,r){
 
     observe({
 
+
       # maj du choix des sites par classe
       if(input$Id1){
         #shinyjs::hide("choix1")
       updatePickerInput(session,"choix1",choices =  r$classe[[paste0("classe",nb)]],choicesOpt = list(
         content = ifelse(
+          # on regarde si le site est outre mer
           isOutreMer(Tonnage, r$classe, nb),
           sprintf("<span class='label label-%s'>%s</span>", "info",paste(r$classe[[paste0("classe", nb)]],"(Outre Mer)")),
+          # on regarde si le site a un compacteur
           ifelse(r$data[r$data$Site %in% r$classe[[paste0("classe", nb)]], "Compacteur"] == 1,
-                 sprintf("<span class='label label-%s'><span class='glyphicon glyphicon-trash'></span> %s</span>", "danger", r$classe[[paste0("classe", nb)]]),
+                 sprintf("<span class='label label-%s'><span class='glyphicon glyphicon-alert'></span> %s</span>", "danger", r$classe[[paste0("classe", nb)]]),
                  sprintf("<span class='label label-%s'>%s</span>", "primary",r$classe[[paste0("classe", nb)]])
           )
         )
@@ -106,7 +139,7 @@ mod_divClasse_server <- function(id,r){
 
          # cas du site avec compacteur
          else if (r$data[r$data$Site ==input$choix1,"Compacteur"]== 1)
-           res <- paste("<span class='label label-danger'><span class='glyphicon glyphicon-trash'></span>", input$choix1, "</span>")
+           res <- paste("<span class='label label-danger'><span class='glyphicon glyphicon-alert'></span>", input$choix1, "</span>")
 
          #cas du site classique
          else
@@ -115,7 +148,6 @@ mod_divClasse_server <- function(id,r){
        }
 
         })
-
 
      # tirage
       observeEvent(r$random, {
