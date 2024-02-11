@@ -5,12 +5,24 @@
   color: #5bc0de; /* Couleur de l'icône */
 }
 
+.custom-div {
+    padding: 10px 20px;
+    border-radius: 17px;
+    box-shadow: 0 0 0 transparent, 0 0 0 transparent, 6px 4px 25px #d6d6d6;
+    margin-bottom: 20px;
+}
 
 .dropdown {
     border-radius: 15px;
     box-shadow: 0 0 0 transparent, 0 0 0 transparent, 6px 4px 25px #d6d6d6;
     font-size: 10px;
 }
+
+.logo-dropdown {
+    display: inline-block; /* Pour que l'élément prenne la taille du contenu seulement */
+    padding: 5px; /* Espace intérieur autour du logo */
+}
+
 
 
 
@@ -23,4 +35,9 @@
   background-color: white;
   padding: 10px;
 }
+
+.custom-title {
+    font-family: 'Roboto', sans-serif;
+}
+
 
