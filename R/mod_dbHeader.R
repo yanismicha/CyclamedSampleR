@@ -13,10 +13,10 @@ mod_dbHeader_ui <- function(id){
   dashboardHeader(title = "Cyclamed",
                   tags$li(a(href = 'https://www.cyclamed.org/',
                             img(src = "https://www.dropbox.com/scl/fi/4fiaymhomiwo0qv18rlkw/Logo-cyclamed.png?rlkey=g2go3x5gb1mwnfqviygo0f66s&dl=1", height = 30, width = 30,
-                                title = ""),
+                              title = ""),
                             style = "padding-top:10px; padding-bottom:10px;"),
-                          class = "dropdown")
-  )
+                            class = "dropdown")
+                  )
 }
 
 #' dbHeader Server Functions

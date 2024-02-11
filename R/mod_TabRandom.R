@@ -10,7 +10,6 @@
 #' @import shinyjs
 #' @import shinyBS
 
-div_style = "padding: 10px 20px; border-radius: 15px; box-shadow: 0 0 0 transparent, 0 0 0 transparent, 6px 4px 25px #d6d6d6;margin-bottom: 20px"
 mod_TabRandom_ui <- function(id){
   ns <- NS(id)
   tabItem(tabName="rand",
@@ -48,8 +47,9 @@ mod_TabRandom_ui <- function(id){
               column(
                 width = 6,
                 div(
-                  style = div_style,
+                  class = "custom-div",
                   tags$h3(
+                    class="custom-title",
                     HTML("Classe 1:<span id='info_icon1' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                   ),
                   mod_divClasse_ui("cadre1")
@@ -58,8 +58,9 @@ mod_TabRandom_ui <- function(id){
               column(
                 width = 6,
                 div(
-                  style = div_style,
+                  class = "custom-div",
                   tags$h3(
+                    class="custom-title",
                     HTML("Classe 2:<span id='info_icon2' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                   ),
                   mod_divClasse_ui("cadre2")
@@ -70,8 +71,9 @@ mod_TabRandom_ui <- function(id){
               column(
                 width = 6,
                 div(
-                  style = div_style,
+                  class = "custom-div",
                   tags$h3(
+                    class="custom-title",
                     HTML("Classe 3:<span id='info_icon3' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                   ),
                   mod_divClasse_ui("cadre3")
@@ -80,8 +82,9 @@ mod_TabRandom_ui <- function(id){
               column(
                 width = 6,
                 div(
-                  style = div_style,
+                  class = "custom-div",
                   tags$h3(
+                    class="custom-title",
                     HTML("Classe 4:<span id='info_icon4' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                   ),
                   mod_divClasse_ui("cadre4")
@@ -89,13 +92,13 @@ mod_TabRandom_ui <- function(id){
               )
             ),
             div(
-              style = div_style,
+                class = "custom-div",
                 tags$h3(
+                  class="custom-title",
                   HTML("Classe 5: <span id='info_icon5' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                 ),
                 mod_divClasse_ui("cadre5")
             )
-
           )
   )
 }

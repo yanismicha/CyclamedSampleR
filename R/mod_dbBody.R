@@ -11,6 +11,7 @@
 #' @import reactable
 #' @import shinyWidgets
 #' @import plotly
+#' @import shinyBS
 
 mod_dbBody_ui <- function(id){
   ns <- NS(id)
