@@ -14,7 +14,7 @@ mod_dbSidebar_ui <- function(id){
     sidebarMenu(
       menuItem("DATA", tabName = "data"),
       menuItem("Partie Random", tabName = "rand"),
-      menuItem("Partie expert ", tabName = "analyse", startExpanded = FALSE, menuName = "Analyse",
+      menuItem("Statistiques ", tabName = "analyse", startExpanded = FALSE, menuName = "Analyse",
                menuSubItem("Résumés statistiques", tabName = "resume"),
                menuSubItem("Visualisations", tabName = "visu")
       )
