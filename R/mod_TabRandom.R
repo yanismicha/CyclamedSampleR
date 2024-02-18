@@ -10,14 +10,16 @@
 #' @import shinyjs
 #' @import shinyBS
 
-div_style = "padding: 10px 20px; border-radius: 15px; box-shadow: 0 0 0 transparent, 0 0 0 transparent, 6px 4px 25px #d6d6d6;margin-bottom: 20px"
 mod_TabRandom_ui <- function(id){
   ns <- NS(id)
   tabItem(tabName="rand",
-          sidebarPanel(style = "width: 150px;",
+          sidebarPanel(class = "custom-sidebar",
                        # boutton guide
-                       actionBttn(inputId = "guide2",label = "Guide", style = "stretch",color = "primary"),
-                       #prettyRadioButtons(
+                       tags$div(
+                          style = "float: right;", # Aligne à droite
+                          actionBttn(inputId = "guide2", label = "Guide", style = "unite", color = "primary")
+                       ),
+                        #prettyRadioButtons(
                        # inputId = "ref",label ="voulez vous un site de référence?", choices = c("Oui", "Non"),
                        #icon = icon("check"), bigger = TRUE,status = "info",animation = "jelly"
                        #),
@@ -30,27 +32,28 @@ mod_TabRandom_ui <- function(id){
 
                        # bouton de tirage
                        tags$div(
-                         style = "margin-top: 10px;",
-                         actionBttn(inputId = ns("randall"), label = "Tirage des sites :", style = "unite",size = "xs", color = "royal")
+                         style = "text-align: center; margin-top: 100px;", # Alignement et décalage vers le haut
+                         actionBttn(inputId = ns("randall"), label = "Tirage aléatoire", style = "unite", size = "lg", color = "royal")
                        ),
                        bsPopover(ns("randall"), "Tirage aléatoire", content = "Cliquez ici pour obenir un tirage aléatoire des sites.", placement = "right", trigger = "hover",
                                  options = NULL),
                        tags$div(
-                         style = "margin-top: 50px;",
-                         actionBttn(inputId = ns("save_random"),label = "Enregistrer modification:",style = "gradient",size = "xs",color = "primary")
+                         style = "margin-top:100px", # Aligne au centre
+                         actionBttn(inputId = ns("save_random"),label = "Enregistrer",style = "unite",size = "sm",color = "success")
                        )
           ),
-          mainPanel(
-            h1("Sites:"),
+          mainPanel(class = "custom-main",
+                h1("Sites", style = "font-family: 'Open Sans', sans-serif; font-weight: bold; text-align: center;"),
             shinyjs::useShinyjs(),
             # cadres
             fluidRow(
               column(
                 width = 6,
                 div(
-                  style = div_style,
+                  class = "custom-div",
                   tags$h3(
-                    HTML("Classe 1:<span id='info_icon1' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                    class="custom-title",
+                    HTML("Classe 1 <span id='info_icon1' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                   ),
                   mod_divClasse_ui("cadre1")
                 )
@@ -58,9 +61,10 @@ mod_TabRandom_ui <- function(id){
               column(
                 width = 6,
                 div(
-                  style = div_style,
+                  class = "custom-div",
                   tags$h3(
-                    HTML("Classe 2:<span id='info_icon2' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                    class="custom-title",
+                    HTML("Classe 2 <span id='info_icon2' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                   ),
                   mod_divClasse_ui("cadre2")
                 )
@@ -70,9 +74,10 @@ mod_TabRandom_ui <- function(id){
               column(
                 width = 6,
                 div(
-                  style = div_style,
+                  class = "custom-div",
                   tags$h3(
-                    HTML("Classe 3:<span id='info_icon3' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                    class="custom-title",
+                    HTML("Classe 3 <span id='info_icon3' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                   ),
                   mod_divClasse_ui("cadre3")
                 )
@@ -80,22 +85,23 @@ mod_TabRandom_ui <- function(id){
               column(
                 width = 6,
                 div(
-                  style = div_style,
+                  class = "custom-div",
                   tags$h3(
-                    HTML("Classe 4:<span id='info_icon4' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                    class="custom-title",
+                    HTML("Classe 4 <span id='info_icon4' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                   ),
                   mod_divClasse_ui("cadre4")
                 )
               )
             ),
             div(
-              style = div_style,
+                class = "custom-div",
                 tags$h3(
-                  HTML("Classe 5: <span id='info_icon5' class='glyphicon glyphicon-info-sign custom-icon'></span>")
+                  class="custom-title",
+                  HTML("Classe 5 <span id='info_icon5' class='glyphicon glyphicon-info-sign custom-icon'></span>")
                 ),
                 mod_divClasse_ui("cadre5")
             )
-
           )
   )
 }
@@ -121,9 +127,13 @@ mod_TabRandom_server <- function(id,r){
         nbCompacteur <-sum(r$data[r$data$Site %in% r$classe[[paste0("classe",i)]],]$Compacteur==1)
         runjs(
           paste0("$('#info_icon", i, "').popover({
-            content: '<div class=\"custom-header\">Information classe ", i, ":</div><div class=\"custom-body\"><b>MinTonnage: </b>", minSite, ":", minTonnage,
-                         "<br><b>MaxTonnage: </b>", maxSite, ":", maxTonnage, "<br><b>Nombre de sites outre mers: </b>",nbOutreMer,
-                         "<br><b>Nombre de sites avec compacteur: </b>",nbCompacteur,"</div>',
+            content: '<div class=\"custom-header\">Information classe ", i,
+                 ":</div><div class=\"custom-body\"><b>Intervalle de tonnage: </b> [",round(minTonnage),",",round(maxTonnage),"]",
+                          "<br><b>MinTonnage: </b>", minSite, ":", minTonnage,
+                          "<br><b>MaxTonnage: </b>", maxSite, ":", maxTonnage,
+                          "<br><b>Nombre de sites: </b>",length(r$classe[[paste0("classe",i)]]),
+                          "<br><b>Dont outre mers: </b>",nbOutreMer,
+                          "<br><b>Dont compacteur: </b>",nbCompacteur,"</div>',
             placement: 'right',
             trigger: 'hover',
             html: true,

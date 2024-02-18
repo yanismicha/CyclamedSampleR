@@ -19,6 +19,8 @@ app_server <- function(input, output, session) {
 
   }) ## fin du observe
 
+  #######################PARTIE Accueil #######################
+  mod_TabAccueil_server("TabAccueil_1")
 
   #######################PARTIE DATA #######################
 

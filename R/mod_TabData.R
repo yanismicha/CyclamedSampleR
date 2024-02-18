@@ -94,7 +94,7 @@ mod_TabData_server <- function(id,r){
     #sauvegarde de data au format csv
     output$save_data <- downloadHandler(
       filename <- function(){
-        paste("data",Sys.Date(), ".csv", sep = ',')
+        paste("Tonnage",Sys.Date(), ".pdf", sep = ',')
       },
       content <- function(file){
         write.csv(r$data,file)

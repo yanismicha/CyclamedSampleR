@@ -7,6 +7,7 @@ editor_options:
 
 ```{r development, include=FALSE}
 library(testthat)
+library(shiny)
 
 ```
 
@@ -117,10 +118,6 @@ test_that("isOutreMer works", {
   expect_equal(object = length(isOutreMer(Tonnage)), expected = nrow(Tonnage))
 })
 ```
-
-
-
-
 
 
 
