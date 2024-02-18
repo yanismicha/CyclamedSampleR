@@ -1,8 +1,22 @@
 /* custom.css */
 
+/* Styles pour le sidebarPanel */
+.custom-sidebar {
+    background-color: #ecf0f5; /* Couleur de fond du sidebarPanel */
+}
+
+/* Styles pour le mainPanel */
+.custom-main {
+    background-color: #ecf0f5; /* Couleur de fond du mainPanel */
+}
+
+
+
+
 .custom-icon {
-  font-size: 14px; /* Taille de l'icône */
+  font-size: 16px; /* Taille de l'icône */
   color: #5bc0de; /* Couleur de l'icône */
+  margin-right: 20px;
 }
 
 .custom-div {
@@ -12,9 +26,10 @@
     margin-bottom: 20px;
 }
 
+
 .dropdown {
     border-radius: 15px;
-    box-shadow: 0 0 0 transparent, 0 0 0 transparent, 6px 4px 25px #d6d6d6;
+box-shadow: 0 0 0 transparent, 0 0 0 transparent, 2px 1px 5px #d6d6d6;
     font-size: 10px;
 }
 
