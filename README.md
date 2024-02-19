@@ -3,15 +3,21 @@
 
 # CyclamedSampleR
 
-<!-- badges: start -->
+<div style="display: flex;">
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-<!-- badges: end -->
+    <div style="flex: 33.33%; padding: 5px;">
+        <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental">
+            <img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental" width="100" height="100" />
+        </a>
+    </div>
+    <div style="flex: 33.33%; padding: 5px;">
+        <img src="inst/app/www/logo-uga.png" alt="Logo UGA" width="100" height="100" />
+    </div>
+    <div style="flex: 33.33%; padding: 5px;">
+        <img src="inst/app/www/logo.gif" alt="Logo" width="100" height="100" />
+    </div>
 
-![](inst/app/www/logo-uga.png)
-
-![](inst/app/www/logo.gif)
+</div>
 
 L’objectif de cette interface est de permettre à **Cyclamed**
 d’optimiser leur étude annuelle d’échantillonnage.
