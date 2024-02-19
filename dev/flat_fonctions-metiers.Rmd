@@ -49,30 +49,9 @@ list_opt<-list(classe1=data_opt$Site[data_opt$class_opt==1],
                classe4=data_opt$Site[data_opt$class_opt==4],
                classe5=data_opt$Site[data_opt$class_opt==5])
 
-return(list_opt)
+return(c(list_opt,bornes=cum$bh))
 }
-stratopt<-function(data){
 
-  cum<-strata.cumrootf(x=data$Tonnages.DIM,n=5,Ls=5,alloc=c(0.5,0,0.5),nclass = 200)
-
-  class_opt<-numeric(dim(data)[1])
-
-  class_opt<-as.numeric(data$Tonnages.DIM<=cum$bh[1])+
-    2*as.numeric(data$Tonnages.DIM>cum$bh[1]&data$Tonnages.DIM<=cum$bh[2])+
-    3*as.numeric(data$Tonnages.DIM>cum$bh[2]&data$Tonnages.DIM<=cum$bh[3])+
-    4*as.numeric(data$Tonnages.DIM>cum$bh[3]&data$Tonnages.DIM<=cum$bh[4])+
-    5*as.numeric(data$Tonnages.DIM>cum$bh[4])
-
-  data_opt<-data.frame(data,class_opt)
-
-  list_opt<-list(classe1=data_opt$Site[data_opt$class_opt==1],
-                 classe2=data_opt$Site[data_opt$class_opt==2],
-                 classe3=data_opt$Site[data_opt$class_opt==3],
-                 classe4=data_opt$Site[data_opt$class_opt==4],
-                 classe5=data_opt$Site[data_opt$class_opt==5])
-
-  return(list_opt)
-}
 
 ```
 
