@@ -5,11 +5,10 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
 [![Logo
-UGA](inst/app/www/logo-uga.png)](https://www.univ-grenoble-alpes.fr/){width:
-100px;}
-[![Logo](inst/app/www/logo.gif)](https://www.cyclamed.org/){width:
-100px;}
+UGA](inst/app/www/logo-uga.png)](https://www.univ-grenoble-alpes.fr/)
+[![Logo](inst/app/www/logo.gif)](https://www.cyclamed.org/)
 
 L’objectif de cette interface est de permettre à **Cyclamed**
 d’optimiser leur étude annuelle d’échantillonnage.
