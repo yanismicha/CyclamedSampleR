@@ -28,7 +28,7 @@ mod_divClasse_ui <- function(id){
           column(
             width = 12,
             align = "center",
-            htmlOutput(ns("site1"), style = "font-size: 20px;margin-bottom: 30px;") # Vous pouvez ajuster la taille de la police selon vos besoins
+            htmlOutput(ns("site1"), style = "font-size: 20px;margin-bottom: 30px;")
           )
         ),
         #htmlOutput(ns("site1")), # SITE tire
@@ -90,7 +90,8 @@ mod_divClasse_server <- function(id,r){
 
     observe({
 
-
+      # on stock les valeurs des switchs dans r$switch
+      r[[paste0("switch",nb)]] <- input$Id1
       # maj du choix des sites par classe
       if(input$Id1){
         #shinyjs::hide("choix1")
