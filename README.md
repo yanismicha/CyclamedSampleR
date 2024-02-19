@@ -9,6 +9,10 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+![](inst/app/www/logo-uga.png)
+
+![](inst/app/www/logo.gif)
+
 L’objectif de cette interface est de permettre à **Cyclamed**
 d’optimiser leur étude annuelle d’échantillonnage.
 
@@ -88,7 +92,3 @@ classes <- stratopt(Tonnage)
     #> [1] "Nombre de sites pour la classe  3 : 45"
     #> [1] "Nombre de sites pour la classe  4 : 31"
     #> [1] "Nombre de sites pour la classe  5 : 23"
-    #> [1] "Nombre de sites pour la classe  6 : 0"
-    #> [1] "Nombre de sites pour la classe  7 : 0"
-    #> [1] "Nombre de sites pour la classe  8 : 0"
-    #> [1] "Nombre de sites pour la classe  9 : 0"
