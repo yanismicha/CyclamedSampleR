@@ -50,16 +50,15 @@ CyclamedSampleR::run_app()
 
 L'interface se décompose en trois principaux onglets:
 
-- onglet `data`
-- onglet `random`
-- onglet `analyse statistique`
+- onglet `Jeux de données`
+- onglet `séléction de sites`
+- onglet `statistiques`
 
-### onglet data
-
+### onglet Jeux de données
 cette onglet permet principalement de pouvoir visualiser le jeu de donnée avec le package `reactable` permettant également de faire des recherches spécifiques par variables et de trier de manière très simpliste. 
 Un bouton est également présent permettant d'ajouter directement un site au jeu de donnée.  
 
-### onglet random
+### onglet séléction de sites
 cet onglet permet de tirer les cinq sites dans le cadre de l'étude d'échantillonnage.
 Quelques fonctionnalités sont disponibles en plus du tirage:
 
