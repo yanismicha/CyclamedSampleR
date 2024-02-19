@@ -3,21 +3,13 @@
 
 # CyclamedSampleR
 
-<div style="display: flex;">
-
-    <div style="flex: 33.33%; padding: 5px;">
-        <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental">
-            <img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental" width="100" height="100" />
-        </a>
-    </div>
-    <div style="flex: 33.33%; padding: 5px;">
-        <img src="inst/app/www/logo-uga.png" alt="Logo UGA" width="100" height="100" />
-    </div>
-    <div style="flex: 33.33%; padding: 5px;">
-        <img src="inst/app/www/logo.gif" alt="Logo" width="100" height="100" />
-    </div>
-
-</div>
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Logo
+UGA](inst/app/www/logo-uga.png)](https://www.univ-grenoble-alpes.fr/){width:
+100px;}
+[![Logo](inst/app/www/logo.gif)](https://www.cyclamed.org/){width:
+100px;}
 
 L’objectif de cette interface est de permettre à **Cyclamed**
 d’optimiser leur étude annuelle d’échantillonnage.
