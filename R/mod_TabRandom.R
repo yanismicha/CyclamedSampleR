@@ -136,22 +136,23 @@ mod_TabRandom_server <- function(id,r){
         maxTonnage <- max(r$data[r$data$Site %in% r$classe[[paste0("classe",i)]],]$Tonnages.DIM)
         minSite <- r$data[r$data$Tonnages.DIM == minTonnage,"Site"][[1]]
         maxSite <- r$data[r$data$Tonnages.DIM == maxTonnage,"Site"][[1]]
+        nbSites <- length(r$classe[[paste0("classe",i)]])
         nbOutreMer <- sum(isOutreMer(r$data,r$classe,i))
         nbCompacteur <-sum(r$data[r$data$Site %in% r$classe[[paste0("classe",i)]],]$Compacteur==1)
         # construction du popup lorsque l'on passe la souris
-        runjs(
-          paste0("$('#info_icon", i, "').popover({
-            content: '<div class=\"custom-header\">Information classe ", i,
-                 ":</div><div class=\"custom-body\"><b>Intervalle de tonnage: </b>",IC,
-                          "<br><b>MinTonnage: </b>", minSite, ":", minTonnage,
-                          "<br><b>MaxTonnage: </b>", maxSite, ":", maxTonnage,
-                          "<br><b>Nombre de sites: </b>",length(r$classe[[paste0("classe",i)]]),
-                          "<br><b>Dont outre mers: </b>",nbOutreMer,
-                          "<br><b>Dont compacteur: </b>",nbCompacteur,"</div>',
-            placement: 'right',
-            trigger: 'hover',
-            html: true,
-          });")
+        session$sendCustomMessage(
+          type = "initializePopover",
+          message = list(
+            i = i,
+            IC = IC,
+            minSite = minSite,
+            minTonnage = minTonnage,
+            maxSite = maxSite,
+            maxTonnage = maxTonnage,
+            nbSites = nbSites,
+            nbOutreMer = nbOutreMer,
+            nbCompacteur = nbCompacteur
+          )
         )
 
       }

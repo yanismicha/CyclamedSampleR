@@ -8,7 +8,6 @@
 #'
 #' @noRd
 app_ui <- function(request) {
-  data(Tonnage)
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),

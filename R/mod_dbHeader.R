@@ -12,7 +12,7 @@ mod_dbHeader_ui <- function(id){
   ns <- NS(id)
   dashboardHeader(title = "Cyclamed",
                   tags$li(a(href = 'https://www.cyclamed.org/',
-                            img(src = "www/logo.gif", height = 30, width = 30,
+                            img(src = "www/logo.jpg",width = 70,
                               title = ""),
                             style = "padding-top:10px; padding-bottom:10px;"),
                             class = "dropdown")
