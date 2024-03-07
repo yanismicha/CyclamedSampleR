@@ -1,0 +1,160 @@
+---
+output:
+  pdf_document:
+    extra_dependencies: ["float"]
+    keep_tex: FALSE
+header-includes:
+  \usepackage{float}
+  \usepackage{fancyhdr}
+  \usepackage{ocgx2}
+  \usepackage{hyperref}
+  \usepackage{xcolor}
+  \definecolor{steelblue}{RGB}{70, 130, 180}
+  \definecolor{lightblue}{RGB}{0,192,239}
+  \definecolor{darkblue}{RGB}{60,141,188}
+  \definecolor{steelred}{RGB}{221,75,57}
+  \usepackage{listings}
+  \lstset{frame=tb,language=R,keywordstyle=\color{blue},alsoletter={.}}
+  \pagestyle{fancy}
+  \usepackage[section]{placeins}
+  \definecolor{Grey}{rgb}{0.5, 0.5, 0.5}
+  \rhead{\color{Grey}CyclamedSampleR--Guide}
+  \lhead{\color{Grey} Y.M D.B R.S T.M}
+  \definecolor{DarkRed}{rgb}{0.64, 0.0, 0.0}
+  \setcounter{tocdepth}{2}
+---
+
+```{=tex}
+\begin{titlepage}
+   \begin{center}
+       \vspace*{1cm}
+                   
+       \textbf{CyclamedSampleR}
+       
+       \vfill
+       
+       \textbf{\color{DarkRed} \Huge Guide utilisateur}
+
+       \vspace{0.5cm}
+       
+       \textbf{\color{DarkRed} \Large Application pour optimiser la séléction de sites pour l'étude de caractérisation}
+       
+       \vspace{0.5cm}
+        
+    \textbf{\Large }
+    
+       \includegraphics[width=0.3\textwidth]{logo.jpg}
+    
+       \vspace{3cm}
+
+       \textbf{\Large MICHA Yanis,BERGER Dylan,SELVARADJOU Richard,MUTAMU Tony Dassin}
+
+       \vfill
+            
+       \vspace{0.4cm}
+     
+       \includegraphics[width=0.25\textwidth]{logo-uga.png}
+            
+       Université Grenoble Alpes\\
+       Master 1 SSD
+            
+   \end{center}
+\end{titlepage}
+```
+```{=tex}
+\newpage
+\thispagestyle{empty}
+\tableofcontents
+```
+\newpage
+
+# Objectif de l'application
+
+Cette application a pour principale vocation de permettre la sélection de cinq sites pour l'étude de caractérisation des MNU (Médicaments Non Utilisés). Elle permet également de visualiser les données et de les modifier directement depuis un onglet, ainsi que de visualiser ces données et de les explorer dans un tableau de bord.
+
+# Description des différents onglets et leurs contenus
+
+## Les données:
+
+Dans cet onglet, vous retrouverez l'ensemble des sites dans un jeu de données optimisé pour la recherche. Il est possible de trier chaque site par différents facteurs tels que leurs tonnages ou leurs régions, mais également de faire une recherche spécifique si nécessaire. Un bouton est mis à disposition pour permettre l'ajout d'un nouveau site. Une fois appuyé, une fiche de renseignements doit être remplie afin d'ajouter un nouveau site.
+
+Attention, ajouter un site sur le jeu de données impacte directement les classes et la sélection de sites!
+
+Il est également possible de sélectionner un ou plusieurs sites et de les supprimer du jeu de données.
+
+## Sélection des sites:
+
+Cet onglet permet de réaliser un tirage aléatoire de cinq sites pour permettre l'étude de caractérisation de l'année à venir. Ce tirage choisit un site par classe, construite à l'aide d'un plan de sondage stratifié réalisé lors d'une [étude antérieure](https://www.dropbox.com/scl/fi/eq6d5hp2shufl4js1uadk/Cyclamed_EtudeCaracterisation2022.pdf?rlkey=wizxd1ohkoc5gpvg128i8w31l&dl=1).\
+Quelques fonctionnalités sont disponibles en plus du tirage: - la possibilité de relancer le tirage plusieurs fois avec remise pour tous les sites. - Possibilité de relancer le tirage plusieurs fois avec remise pour un ou plusieurs sites spécifiques - Possibilité de choisir directement dans la liste des classes.(Non conseillé) - Information sur les sites choisis - Indications des sites avec ou sans compacteurs. - Indication des sites Outre-Mer. - Affichage d'informations sur les classes: intervalles de tonnage des DIM,nombre de sites total, nombre de sites avec compacteur, nombre de sites outre-mers,etc.
+
+Les différentes classes sont récupérés avec la fonction `stratopt` qui implémente le plan de sondage stratifié optimisé:
+
+```{=tex}
+\textbf{\textcolor{steelblue}{\switchocg{myLayer}{Afficher le code R}}}
+\begin{ocg}{My Layer}{myLayer}{off}
+\begin{lstlisting}[language=R]
+stratopt<-function(data){
+  cum<-strata.cumrootf(x=data$Tonnages.DIM,n=5,Ls=5,alloc=c(0.5,0,0.5),nclass = 200)
+  class_opt<-numeric(dim(data)[1])
+  class_opt<-as.numeric(data$Tonnages.DIM<=cum$bh[1])+
+  2*as.numeric(data$Tonnages.DIM>cum$bh[1]&data$Tonnages.DIM<=cum$bh[2])+
+  3*as.numeric(data$Tonnages.DIM>cum$bh[2]&data$Tonnages.DIM<=cum$bh[3])+
+  4*as.numeric(data$Tonnages.DIM>cum$bh[3]&data$Tonnages.DIM<=cum$bh[4])+
+  5*as.numeric(data$Tonnages.DIM>cum$bh[4])
+
+data_opt<-data.frame(data,class_opt)
+
+list_opt<-list(classe1=data_opt$Site[data_opt$class_opt==1],
+               classe2=data_opt$Site[data_opt$class_opt==2],
+               classe3=data_opt$Site[data_opt$class_opt==3],
+               classe4=data_opt$Site[data_opt$class_opt==4],
+               classe5=data_opt$Site[data_opt$class_opt==5])
+  
+return(list_opt)
+
+\end{lstlisting}
+\end{ocg}
+```
+### Utilisation de l'onglet
+
+**Utilisation des bouttons**:
+
+-   Bouton "tirage aléatoire"\
+    Ce boutton permet de réaliser un tirage des sites pour chaque classe à l'aide de la fonction `stratopt` décrite précedemment. Une fois cliqué, une fenêtre s'ouvre pour valider le tirage ou non afin d'éviter une erreur de tirage.\
+    Si le tirage s'avère ne pas être le premier, les site de nouveau tirés aléatoirement seront ceux dont le boutton "garder le site" de la classe correspondante à été décoché.\
+-   Bouton "Enregistrer"\
+    Ce boutton permet de valider un tirage complet des cinq sites pour une année donnée.\
+    Une fois cliqué, une fenêtre s'ouvre pour confirmer la validation. Une ligne est alors ajouté dans l'historique avec la possibilité d'y ajouter un commentaire.  
+    Il s'affiche uniquement lorsque les cinq classes ont leur boutton "garder le site" activé.  
+-   Boutton "Afficher l'historique"\
+    Permet d'afficher l'historique des précédents tirages.
+
+**Utilisation des cadres**:\
+Sur la droite de l'onglet sont présents cinq cadres présentant respectivement les cinqs classes du plan d'échantillonnage stratifié.\  
+
+\includegraphics[width=1\textwidth]{cadre.png}  
+
+On y retrouve:
+
+-   le nom de la classe
+-   un boutton \textbf{\textcolor{steelblue}{information}}\
+    Il vous suffit de placer la souris sur ce boutton pour afficher des informations sur la classe.\
+-   un menu déroulant permettant de visualiser l'ensemble des sites présents dans la classe et de les séléctionner. Il est également possible de faire un recherche d'un site en particulier au sein d'une classe.\
+    Afin de distinguer certaines spécificités importantes à prendre en compte lors du tirage, un code couleur à été crée:
+    - \textcolor{lightblue}{Bleu clair}: correspond à un site présent sur un territoire outre-mer.
+    - \textcolor{darkblue}{Bleu foncé}: correspond à un site classique présent sur le territoire métropolitain.
+    - \textcolor{steelred}{Rouge foncé}: correspond à un site avec la présence d'un compacteur.  
+Ce code couleur est utilisé non seulement à l'intérieur du menu déroulant mais également lors de l'affichage du site tiré.  
+- un boutton switch "garder le site".  
+Ce boutton s'active automatiquement lorsqu'un tirage est réalisé. En le décochant, il permet de réaliser un nouveau tirage d'un site pour une classe donnée.  Si l'on souhaite réaliser un nouveau tirage de l'ensemble des classes, il suffit de décocher le boutton de chaque classe.  
+Au centre de chaque cadre est affiché le site tiré aléatoirement de la classe avec le code couleur correspondant (nécessite au moins un premier tirage pour permettre de le visualiser).  
+
+## Statistiques
+
+### Résumés
+
+Cet onglet permet d'explorer les données à l'aide de tables de contingence.
+
+### Tableau de bord
+
+Cet onglet comporte un tableau de bord sur les différents sites de MNU. Il permet notamment d'explorer plus en profondeur les données à l'aide de graphiques simples et interactifs.
