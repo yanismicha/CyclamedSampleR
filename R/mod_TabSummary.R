@@ -7,6 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+utils::globalVariables("Tonnage")
 mod_TabSummary_ui <- function(id){
   ns <- NS(id)
   tabItem(tabName = "resume",

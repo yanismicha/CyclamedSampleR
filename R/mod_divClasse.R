@@ -60,17 +60,24 @@ mod_divClasse_ui <- function(id){
           column(
             width = 2,
             offset = ifelse(id == "cadre5",8,6),
-            shinyjs::disabled(
-              prettySwitch(
-                # bouton pour garder le site ou non
+            #shinyjs::disabled(
+              switchInput(
                 inputId = ns("Id1"),
                 label = NULL,
-                status = "success",
+                onLabel = icon("lock"),
+                offLabel = icon("lock-open"),
                 value = FALSE,
-                fill = TRUE,
+                disabled = TRUE,
+                size='small'
               )
-            ),
-            "garder le site",
+              # prettySwitch(
+              #   # bouton pour garder le site ou non
+              #   inputId = ns("Id1"),
+              #   label = HTML('<i class="fas fa-lock-open"></i>'),
+              #   status = "success",
+              #   value = FALSE,
+              #   fill = TRUE,
+              # )),
           )
         )
       )
@@ -92,26 +99,30 @@ mod_divClasse_server <- function(id,r){
 
       # on stock les valeurs des switchs dans r$switch
       r[[paste0("switch",nb)]] <- input$Id1
+
       # maj du choix des sites par classe
       if(input$Id1){
         #shinyjs::hide("choix1")
-      updatePickerInput(session,"choix1",choices =  r$classe[[paste0("classe",nb)]],choicesOpt = list(
-        content = ifelse(
-          # on regarde si le site est outre mer
-          isOutreMer(Tonnage, r$classe, nb),
-          sprintf("<span class='label label-%s'>%s</span>", "info",paste(r$classe[[paste0("classe", nb)]],"(Outre Mer)")),
-          # on regarde si le site a un compacteur
-          ifelse(r$data[r$data$Site %in% r$classe[[paste0("classe", nb)]], "Compacteur"] == 1,
-                 sprintf("<span class='label label-%s'><span class='glyphicon glyphicon-alert'></span> %s</span>", "danger", r$classe[[paste0("classe", nb)]]),
-                 sprintf("<span class='label label-%s'>%s</span>", "primary",r$classe[[paste0("classe", nb)]])
-          )
+        updatePickerInput(session,"choix1",choices =  r$classe[[paste0("classe",nb)]],
+                          choicesOpt = list(
+                              content = ifelse(
+                                # on regarde si le site est outre mer
+                                isOutreMer(Tonnage, r$classe, nb),
+                                sprintf("<span class='label label-%s'>%s</span>", "info",paste(r$classe[[paste0("classe", nb)]],"(Outre Mer)")),
+                                # on regarde si le site a un compacteur
+                                ifelse(r$data[r$data$Site %in% r$classe[[paste0("classe", nb)]], "Compacteur"] == 1,
+                                       sprintf("<span class='label label-%s'><span class='glyphicon glyphicon-alert'></span> %s</span>", "danger", r$classe[[paste0("classe", nb)]]),
+                                       sprintf("<span class='label label-%s'>%s</span>", "primary",r$classe[[paste0("classe", nb)]])
+                                )
+                              )
+                          ),
+                        #choix du site tiré
+                        selected =  ifelse(r[[paste0("site",nb)]]== "",NULL,r[[paste0("site",nb)]])
         )
-      ),
-      #choix du site tiré
-      selected =  ifelse(r[[paste0("site",nb)]]== "",NULL,r[[paste0("site",nb)]])
-      )
       }
-      # else
+
+
+
       #   shinyjs::show("choix1")
 
 
@@ -153,7 +164,8 @@ mod_divClasse_server <- function(id,r){
      # tirage
       observeEvent(r$random, {
         if (isTRUE(r$random)){
-          shinyjs::enable("Id1")
+          #shinyjs::enable("Id1")
+          updateSwitchInput(session,"Id1",disabled = FALSE)
           if(input$Id1){r[[paste0("site",nb)]]}
           else {
             nouvelle_valeur <- sample(r$classe[[paste0("classe",nb)]], 1, replace = FALSE)

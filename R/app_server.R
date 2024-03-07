@@ -8,7 +8,7 @@
 #' @noRd
 app_server <- function(input, output, session) {
   ## Initialisation des sites et de la data ##
-  r <- reactiveValues(data = Tonnage, site1 = "",site2 = "",site3 = "",site4 = "",site5 = "")
+  r <- reactiveValues(data = Tonnage, site1 = "",site2 = "",site3 = "",site4 = "",site5 = "",hist=historique)
   observe({
 
 

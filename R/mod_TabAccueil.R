@@ -47,7 +47,7 @@ mod_TabAccueil_ui <- function(id){
                           </svg>'),
                           class = "alert-heading"
                         ),
-                        "Ajouter un site sur le jeu de données impacte directement les classes et la sélection de sites!"
+                        "Ajouter un site sur le jeu de données impact directement les classes et la sélection de sites!"
                       ),
                       "Il est également possible de sélectionner un ou plusieurs sites et de les supprimer du jeu de données."
               ),
@@ -59,7 +59,7 @@ mod_TabAccueil_ui <- function(id){
               tags$li(h4("Statistiques:"),
                       tags$ul(
                         tags$li(h4("Résumés:"),
-                                "Cet onglet permet d'explorer les données à l'aide de tables de contingence. (explication de leur utilité)"
+                                "Cet onglet permet d'explorer les données à l'aide de tables de contingence."
                         ),
                         tags$li(h4("Tableau de bord:"),
                                 "Cet onglet comporte un tableau de bord sur les différents sites de MNU. Il permet notamment d'explorer plus en profondeur les données à l'aide de graphiques simples et interactifs."
