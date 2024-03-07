@@ -12,6 +12,7 @@ Depends:
     R (>= 2.10)
 Imports: 
     config (>= 0.3.2),
+    DT,
     golem (>= 0.4.1),
     plotly,
     reactable,
@@ -22,6 +23,8 @@ Imports:
     shinyjs,
     shinyWidgets,
     stratification,
+    usethis,
+    utils,
     viridis
 Suggests: 
     knitr,

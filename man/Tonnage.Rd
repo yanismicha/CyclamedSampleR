@@ -3,7 +3,7 @@
 \docType{data}
 \name{Tonnage}
 \alias{Tonnage}
-\title{World Health Organization TB data}
+\title{Data of waste from medicines site information.}
 \format{
 ## `Tonnage`
 A data frame with 188 rows and 6 columns:
