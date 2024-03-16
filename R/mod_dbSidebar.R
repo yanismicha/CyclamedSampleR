@@ -12,12 +12,12 @@ mod_dbSidebar_ui <- function(id){
   ns <- NS(id)
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Accueil",tabName = "accueil"),
-      menuItem("Les données", tabName = "data"),
-      menuItem("Séléction des sites", tabName = "rand"),
-      menuItem("Statistiques ", tabName = "analyse", startExpanded = FALSE, menuName = "Analyse",
-               menuSubItem("Résumés statistiques", tabName = "resume"),
-               menuSubItem("Tableau de bord", tabName = "visu")
+      menuItem(" Accueil",tabName = "accueil",icon = icon("house")),
+      menuItem("Les données", tabName = "data",icon = icon("table")),
+      menuItem("Séléction des sites", tabName = "rand",icon = icon("shuffle")),
+      menuItem("Statistiques ", tabName = "analyse", startExpanded = FALSE, menuName = "Analyse",icon = icon("chart-line"),
+               menuSubItem("Résumés statistiques", tabName = "resume",icon = icon("dashboard")),
+               menuSubItem("Tableau de bord", tabName = "visu",icon = icon("square-poll-horizontal"))
       )
     )
   )

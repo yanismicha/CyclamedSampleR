@@ -51,7 +51,7 @@ mod_divClasse_ui <- function(id){
                   showContent=FALSE,
                   showIcon=FALSE,
                   size=10,
-                  style = "dropdown"
+                  style = "custom-dropdown"
               ),
               multiple = TRUE,
               width = "100px"
@@ -151,7 +151,7 @@ mod_divClasse_server <- function(id,r){
 
          # cas du site avec compacteur
          else if (r$data[r$data$Site ==input$choix1,"Compacteur"]== 1)
-           res <- paste("<span class='label label-danger'><span class='glyphicon glyphicon-alert'></span>", input$choix1, "</span>")
+           res <- paste("<span class='label label-danger'><i class='fa-solid fa-dumpster fa-beat'></i>", input$choix1, "</span>")
 
          #cas du site classique
          else
