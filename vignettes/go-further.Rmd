@@ -31,9 +31,44 @@ data("Tonnage")
 stratopt(Tonnage)$classe1
 ```
 
-```{r examples-function_isOutreMer}
+```{r examples-isOutreMer}
 isOutreMer(Tonnage)
 classes <- stratopt(Tonnage)
 isOutreMer(Tonnage,classes,1)
+```
+
+```{r examples-use_darkmode}
+require(shiny)
+vars <- setdiff(names(iris), "Species")
+ui <- fluidPage(
+  titlePanel("example App"), 
+  # Setup
+  use_darkmode(),
+    sidebarPanel(
+      selectInput('xcol', 'X Variable', vars),
+     selectInput('ycol', 'Y Variable', vars, selected = vars[[2]]),
+     numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+    )
+)
+
+```
+
+```{r examples-darkmode}
+require(shiny)
+vars <- setdiff(names(iris), "Species")
+ui <- fluidPage(
+  titlePanel("example App"), 
+  # Setup
+  use_darkmode(),
+    sidebarPanel(
+      selectInput('xcol', 'X Variable', vars),
+     selectInput('ycol', 'Y Variable', vars, selected = vars[[2]]),
+     numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+    )
+)
+server <- function(input,output,session){
+  darkmode(label = '🌓')
+  
+}
 ```
 

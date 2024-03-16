@@ -14,10 +14,11 @@
 
 
 .custom-icon {
-  font-size: 16px; /* Taille de l'icône */
-  color: #5bc0de; /* Couleur de l'icône */
+  font-size: 18px; /* Taille de l'icône */
+ /* color: #5bc0de; /* Couleur de l'icône */
   margin-right: 20px;
 }
+
 
 .custom-div {
     padding: 10px 20px;
@@ -27,15 +28,11 @@
 }
 
 
-.dropdown {
-    border-radius: 15px;
-box-shadow: 0 0 0 transparent, 0 0 0 transparent, 2px 1px 5px #d6d6d6;
-    font-size: 10px;
-}
 
-.logo-dropdown {
-    display: inline-block; /* Pour que l'élément prenne la taille du contenu seulement */
-    padding: 5px; /* Espace intérieur autour du logo */
+
+.custom-dropdown {
+    box-shadow: 0 0 0 transparent, 0 0 0 transparent, 2px 1px 5px #d6d6d6;
+    font-size: 10px;
 }
 
 

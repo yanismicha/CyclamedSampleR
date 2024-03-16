@@ -86,7 +86,7 @@ isOutreMer <- function(data,classes=NULL,nb=1){
 }
 ```
 
-```{r examples-function_isOutreMer}
+```{r examples-isOutreMer}
 isOutreMer(Tonnage)
 classes <- stratopt(Tonnage)
 isOutreMer(Tonnage,classes,1)
@@ -97,6 +97,132 @@ test_that("isOutreMer works", {
   expect_equal(object = length(isOutreMer(Tonnage)), expected = nrow(Tonnage))
 })
 ```
+
+
+```{r function-use_darkmode}
+#' Initialisation du mode sombre
+#'
+#' Charge les fichiers CSS et JS nécessaires pour le mode sombre.
+#' @import shiny
+#' @return pas de retour
+#' @export
+#' @author Deepanshu Bhalla
+use_darkmode <- function() {
+  tagList(
+    tags$head(tags$script(src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js")),
+    tags$script("Shiny.addCustomMessageHandler('darkmode_enable', function(data) { eval(data.message) });"),
+    tags$style(".darkmode-layer, .darkmode-toggle {z-index: 500;}")
+  )
+}
+```
+
+```{r examples-use_darkmode}
+require(shiny)
+vars <- setdiff(names(iris), "Species")
+ui <- fluidPage(
+  titlePanel("example App"), 
+  # Setup
+  use_darkmode(),
+    sidebarPanel(
+      selectInput('xcol', 'X Variable', vars),
+     selectInput('ycol', 'Y Variable', vars, selected = vars[[2]]),
+     numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+    )
+)
+
+```
+
+```{r tests-use_darkmode}
+
+```
+
+
+```{r function-darkmode}
+#' Activer le mode Sombre
+#'
+#' Permet d'activer le mode sombre avec un boutton
+#'
+#' @param session Session
+#' @param bottom position basse du boutton
+#' @param right position droite
+#' @param left position gauche
+#' @param time temps de l'animation
+#' @param mixColor couleur 
+#' @param backgroundColor couleur de fond
+#' @param buttonColorDark couleur mode sombre
+#' @param buttonColorLight couleur mode clair
+#' @param saveInCookies si la valeur est "true", les préférences de l'utilisateur sont enregistrées dans un cookie. La valeur par défaut est false.
+#' @param label boutton label pour utiliser le mode sombre
+#' @param autoMatchOsTheme si la valeur est "true", le thème de couleur correspondra automatiquement aux préférences du système d'exploitation de l'utilisateur. 
+#' @import jsonlite
+#' @return pas de retour
+#' @export
+#'
+#' @author Deepanshu Bhalla
+#' 
+darkmode <- function(session = getDefaultReactiveDomain(),
+                     bottom = '32px',
+                     right = '32px',
+                     left = 'unset',
+                     time = '0.5s',
+                     mixColor = '#fff',
+                     backgroundColor = '#fff',
+                     buttonColorDark = '#100f2c',
+                     buttonColorLight = '#fff',
+                     saveInCookies = FALSE,
+                     label = '🌓',
+                     autoMatchOsTheme = TRUE) {
+
+  options <- jsonlite::toJSON(list(
+    bottom = bottom,
+    right = right,
+    left = left,
+    time = time,
+    mixColor = mixColor,
+    backgroundColor = backgroundColor,
+    buttonColorDark = buttonColorDark,
+    buttonColorLight = buttonColorLight,
+    saveInCookies = saveInCookies,
+    label = label,
+    autoMatchOsTheme = autoMatchOsTheme
+  ), auto_unbox = TRUE)
+
+
+  jscode0 <- paste0("const darkmode =  new Darkmode(",options, ");")
+  jscode <- paste(jscode0, "darkmode.showWidget();")
+
+  session$sendCustomMessage(
+    type = "darkmode_enable", list(message = jscode)
+  )
+
+}
+```
+
+```{r examples-darkmode}
+require(shiny)
+vars <- setdiff(names(iris), "Species")
+ui <- fluidPage(
+  titlePanel("example App"), 
+  # Setup
+  use_darkmode(),
+    sidebarPanel(
+      selectInput('xcol', 'X Variable', vars),
+     selectInput('ycol', 'Y Variable', vars, selected = vars[[2]]),
+     numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+    )
+)
+server <- function(input,output,session){
+  darkmode(label = '🌓')
+  
+}
+```
+
+```{r tests-darkmode}
+
+```
+
+
+
 
 
 
