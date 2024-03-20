@@ -36,7 +36,7 @@ $(document).ready(function() {
     function initPopColor() {
         $('#info_icon').popover({
             content: '<div class="custom-header">Code couleur' +
-                ':</div><div class="custom-body"><span class="label label-danger"><i class="fa-solid fa-dumpster fa-beat"></i>Compacteur</span>' +
+                ':</div><div class="custom-body"><span class="label label-danger"><i class="fa-solid fa-dumpster"></i>Compacteur</span>' +
                 '<br><br><span class="label label-info">Outre Mer</span>' +
                 '<br><br><span class="label label-primary">Site classique</span>',
             placement: 'bottom',

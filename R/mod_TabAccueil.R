@@ -12,7 +12,19 @@ mod_TabAccueil_ui <- function(id){
   tabItem(
     tabName = "accueil",
     # Initialisation du mode sombre
-    use_darkmode(),
+    tagList(
+      tags$head(tags$script(src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js")),
+      tags$script("Shiny.addCustomMessageHandler('darkmode_enable', function(data) {
+        new Darkmode({
+            label: '🌗', // le logo
+            time: '0.5s', // Temps de transition
+            saveInCookies: false, // Ne pas sauvegarder dans les cookies
+            autoMatchOsTheme: false // Ne pas correspondre automatiquement au thème du système d'exploitation
+          }).showWidget();
+      });"
+      ),
+      tags$style(".darkmode-layer, .darkmode-toggle {z-index: 500;}")
+    ),
     mainPanel(
       tags$div(
         style = "text-align: right; margin-bottom: 20px;",
@@ -23,14 +35,11 @@ mod_TabAccueil_ui <- function(id){
       tags$div(
         style = "margin-left: 70px;",  # Ajuster le niveau d'indentation de la liste à puces
         tags$ul(
-          tags$li(
-            h3("Objectif de l'application"),
             "Cette application a pour principale vocation de permettre la sélection de cinq sites pour l'étude de caractérisation des MNU (Médicaments Non Utilisés). Elle permet également de visualiser les données et de les modifier directement depuis un onglet, ainsi que de visualiser ces données dans un tableau de bord.",
             HTML("<br>Un Guide utilisateur détaillé, peut être lu et téléchargé juste ici:"),
             tags$div(
               style = "display: inline-block;margin-left:20px;margin-right:20px;", # Pour placer les boutons côte à côte
               actionBttn(inputId = ns("popup_guide"),label = "Guide",size="xs",style = "material-flat")
-            ),
             ),
           tags$li(
             h3("Description des onglets et leurs contenus"),

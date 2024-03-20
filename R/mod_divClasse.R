@@ -151,7 +151,7 @@ mod_divClasse_server <- function(id,r){
 
          # cas du site avec compacteur
          else if (r$data[r$data$Site ==input$choix1,"Compacteur"]== 1)
-           res <- paste("<span class='label label-danger'><i class='fa-solid fa-dumpster fa-beat'></i>", input$choix1, "</span>")
+           res <- paste("<span class='label label-danger'><i class='fa-solid fa-dumpster fa-beat' style='--fa-animation-duration: 4s;'></i>", input$choix1, "</span>")
 
          #cas du site classique
          else

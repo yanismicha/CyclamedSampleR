@@ -20,7 +20,9 @@ app_server <- function(input, output, session) {
   }) ## fin du observe
 
   # Ajout du mode sombre ( initialisé dans tabAccueil)
-  darkmode(label = "🌗")
+  session$sendCustomMessage(
+    type = "darkmode_enable", list(message = "const darkmode =  new Darkmode(); darkmode.showWidget();")
+  )
 
   #######################PARTIE Accueil #######################
   mod_TabAccueil_server("TabAccueil_1")
