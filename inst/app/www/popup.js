@@ -44,4 +44,43 @@ $(document).ready(function() {
             html: true
         });
     }
+
+
+
+
+
+
+      Shiny.addCustomMessageHandler("updatePopSite", function(message) {
+          var i = message.i;
+          var region = message.region;
+          var maisonMere = message.maisonMere;
+          var tonnage = message.tonnage;
+          var rotation = message.rotation;
+          var compacteur = message.compacteur;
+
+          // Mettre à jour le contenu du popover existant
+          updatePopSite(i, region, maisonMere, tonnage, rotation, compacteur);
+      });
+      function updatePopSite(i, region, maisonMere, tonnage, rotation, compacteur) {
+      var content = '<div class="custom-header">Information site ' + i +
+          ':</div><div class="custom-body"><b>Region: </b>' + region +
+          '<br><b>Maison mère: </b>' + maisonMere +
+          '<br><b>Tonnage: </b>' + tonnage +
+          '<br><b>Nombre de rotation: </b>' + rotation +
+          '<br><b>Compacteur: </b>' + compacteur + '</div>';
+
+      $('#cadre' + i + '-site1').attr('data-content', content);
+
+      var placement = (i === 5) ? 'top' : 'bottom';
+
+      // Mettre à jour le contenu du popover et spécifier les options trigger et html
+      $('#cadre' + i + '-site1').popover({
+          content: content,
+          placement: placement,
+          trigger: 'hover', // Afficher le popover au survol
+          html: true // Le contenu du popover contient du HTML
+      });
+  }
+
+
 });

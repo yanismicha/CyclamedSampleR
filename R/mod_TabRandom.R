@@ -47,6 +47,7 @@ mod_TabRandom_ui <- function(id){
                        actionBttn(inputId = ns("popup_history"),label = "Historique",size="xs",style = "material-flat")
           ),
           mainPanel(class = "custom-main",
+            # popup information sur le code couleur utilisé pour les sites
             HTML("<div style='display: flex; justify-content: center; align-items: center;'> <h1 style='font-weight: bold; margin-right: 200px; margin-left: 220px'>Sites</h1> <i id='info_icon' class='fa-solid fa-circle-info fa-beat-fade custom-icon' style='--fa-animation-duration: 4s; font-weight: bold;'></i> </div>"),
             # cadres
             fluidRow(
@@ -120,6 +121,7 @@ mod_TabRandom_server <- function(id,r){
       # on stocke la valeur du popup confirmation pour l'utiliser dans le module divClasse
       r$random <- input$confirmation_random
 
+
       # on affiche le boutton de sauvegarde du tirage si tout les switchs sont a TRUE
       if(r$switch1&&r$switch2&&r$switch3&&r$switch4&&r$switch5){
         shinyjs::show("save_random",anim = TRUE)
@@ -134,8 +136,30 @@ mod_TabRandom_server <- function(id,r){
         message = list(
         )
       )
-      ####################################Popup information Classes####################################
+
+
+
+
       for(i in 1:5){
+        ####################################Popup information Sites####################################
+        region <- r$data[r$data$Site == r[[paste0("site",i)]], "Region"]
+        maisonMere <- r$data[r$data$Site == r[[paste0("site",i)]], "Maison.Mere"]
+        tonnageSite <- r$data[r$data$Site == r[[paste0("site",i)]], "Tonnages.DIM"]
+        rotation <- r$data[r$data$Site == r[[paste0("site",i)]], "Nbre.de.rotation"]
+        compacteur <- ifelse(r$data[r$data$Site == r[[paste0("site",i)]], "Compacteur"] == 1, "Oui", "Non")
+
+        session$sendCustomMessage(
+          type = "updatePopSite",
+          message = list(
+            i = i,
+            region = region,
+            maisonMere = maisonMere,
+            tonnage = tonnageSite,
+            rotation = rotation,
+            compacteur = compacteur
+          )
+        )
+        ####################################Popup information Classes####################################
         # on récupères les bornes d'intervalles
         borne_inf <- ifelse(i == 1, 0, round(r$classe[[paste0("bornes", i - 1)]],1))
         borne_sup <- ifelse(i == 5, "\u221E", round(r$classe[[paste0("bornes", i)]],1))
@@ -165,6 +189,7 @@ mod_TabRandom_server <- function(id,r){
 
       }
     })
+
 
 
 
