@@ -9,7 +9,8 @@
 #' @importFrom shiny NS tagList
 mod_dbBodyStyle_ui <- function(id){
   ns <- NS(id)
-  tags$style(HTML("
+  tags$style(
+  HTML("
       .content-wrapper {
         height: 100vh; /* Ajuste la hauteur à 100% de la hauteur de la vue du navigateur */
         overflow-y: auto; /* Active la barre de défilement verticale si nécessaire */
