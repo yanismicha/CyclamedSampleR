@@ -17,6 +17,7 @@ app_server <- function(input, output, session) {
 
 
 
+
   }) ## fin du observe
 
   # Ajout du mode sombre ( initialisé dans tabAccueil)
@@ -24,6 +25,8 @@ app_server <- function(input, output, session) {
     type = "darkmode_enable", list(message = "const darkmode =  new Darkmode(); darkmode.showWidget();")
   )
 
+  #######################PARTIE Sidebar #######################
+  mod_dbSidebar_server("dbSidebar_1")
   #######################PARTIE Accueil #######################
   mod_TabAccueil_server("TabAccueil_1")
 
@@ -35,6 +38,11 @@ app_server <- function(input, output, session) {
    #################################Résumés statistiques###########################
 
    mod_TabSummary_server("TabSummary_1",r)
+
+
+  #################################TABLEAU DE BORD###########################
+
+   mod_TabVisu_server("TabVisu_1")
 
   #################################PARTIE RANDOM###########################
 

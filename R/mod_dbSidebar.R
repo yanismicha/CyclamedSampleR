@@ -19,8 +19,13 @@ mod_dbSidebar_ui <- function(id){
                menuSubItem("Résumés statistiques", tabName = "resume",icon = icon("dashboard")),
                menuSubItem("Tableau de bord", tabName = "visu",icon = icon("square-poll-horizontal"))
       )
+    ),
+    div(
+      textOutput(ns("clock")),
+      style = "position: absolute; bottom: 40px; width: 100%; text-align: center;"
     )
   )
+
 }
 
 #' dbSidebar Server Functions
@@ -30,6 +35,10 @@ mod_dbSidebar_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    output$clock <- renderText({
+      invalidateLater(1000)  # Mettre à jour toutes les secondes
+      format(Sys.time(), "%H:%M:%S")  # Formater l'heure
+    })
   })
 }
 
