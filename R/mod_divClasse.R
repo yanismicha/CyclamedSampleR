@@ -97,6 +97,8 @@ mod_divClasse_server <- function(id,r){
 
     observe({
 
+
+
       # on stock les valeurs des switchs dans r$switch
       r[[paste0("switch",nb)]] <- input$Id1
 
@@ -111,7 +113,7 @@ mod_divClasse_server <- function(id,r){
                                 sprintf("<span class='label label-%s'>%s</span>", "info",paste(r$classe[[paste0("classe", nb)]],"(Outre Mer)")),
                                 # on regarde si le site a un compacteur
                                 ifelse(r$data[r$data$Site %in% r$classe[[paste0("classe", nb)]], "Compacteur"] == 1,
-                                       sprintf("<span class='label label-%s'><span class='glyphicon glyphicon-alert'></span> %s</span>", "danger", r$classe[[paste0("classe", nb)]]),
+                                       sprintf("<span class='label label-%s'><span class='fa-solid fa-dumpster fa-beat' style='--fa-animation-duration: 4s;'></span> %s</span>", "danger", r$classe[[paste0("classe", nb)]]),
                                        sprintf("<span class='label label-%s'>%s</span>", "primary",r$classe[[paste0("classe", nb)]])
                                 )
                               )
@@ -137,6 +139,7 @@ mod_divClasse_server <- function(id,r){
 
 
     })
+
 
     # affichage du site tire
      output$site1 <- renderUI({
