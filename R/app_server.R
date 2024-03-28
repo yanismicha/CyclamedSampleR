@@ -42,7 +42,7 @@ app_server <- function(input, output, session) {
 
   #################################TABLEAU DE BORD###########################
 
-   mod_TabVisu_server("TabVisu_1")
+   mod_TabVisu_server("TabVisu_1",r)
 
   #################################PARTIE RANDOM###########################
 
