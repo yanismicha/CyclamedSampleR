@@ -232,6 +232,12 @@ mod_TabRandom_server <- function(id,r){
           else
             r$hist[row,col]<- new_value
         }
+        else if(i == 10){
+          if(is.na(as.numeric(new_value))||as.numeric(new_value)<2024)
+            r$hist[row,col]<- as.numeric(format(Sys.Date(),"%Y"))
+          else
+            r$hist[row,col]<- new_value
+        }
         else
           r$hist[row,col]<- new_value
       }
@@ -267,16 +273,6 @@ mod_TabRandom_server <- function(id,r){
 
     })
 
-    # création d'un popup confirmation lorsque l'on appui sur le bouton enregistrer
-
-    # observeEvent(input$save_random,{
-    #   confirmSweetAlert(
-    #     session = session, inputId = "confirmation_save", type = "info",
-    #     title = "Etes vous sur de vouloir enregistrer votre tirage?",
-    #     btn_labels = c("Non", "Oui")
-    #   )
-    #
-    # })
 
 
     # popup pour ajouter un commentaire dans l'historique
@@ -286,7 +282,7 @@ mod_TabRandom_server <- function(id,r){
           div(class = "alert alert-info", role = "alert",
               tags$div(
                 class = "alert-primary d-flex align-items-center",  # Suppression de la classe "alert" pour éviter les marges supplémentaires
-                HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 56px; --fa-animation-duration: 4s"></i>'),
+                HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 56px; --fa-animation-duration: 4s"></i>'), # icone anime
                 tags$h2('Est-ce votre choix final pour votre tirage?', class = "ms-3")  # Ajout de la classe "ms-3" pour ajouter un espace à gauche du titre
               )
           ),
@@ -296,9 +292,11 @@ mod_TabRandom_server <- function(id,r){
             choices = c("Oui","Non"),
             selected = "Oui",
             inline = TRUE,
+            status = "info",
             checkbox = TRUE
           ),
-          textInput(ns('Comment'),"Ajouter un commentaire (optionnel)"),
+          #textInput(ns('Comment'),"Ajouter un commentaire (optionnel)"),
+          textInputIcon(ns('Comment'),"Ajouter un commentaire (optionnel)",placeholder = "Exemple:présence compacteur",icon = icon("comment-dots")),
           footer=tagList(
             modalButton('Annuler'),
             actionButton(ns('save_comments'),label = "Valider")
@@ -317,7 +315,7 @@ mod_TabRandom_server <- function(id,r){
                                         Site5=r$site5,
                                         Etat = ifelse(input$Id2=="Oui","Valide","En attente de validation"),
                                         Commentaire=input$Comment,
-                                        Caracterisation=format(Sys.Date(),"%Y")),r$hist)
+                                        Caracterisation=as.numeric(format(Sys.Date(),"%Y"))),r$hist)
       write.csv(r$hist,"historique.csv",row.names = FALSE)
       historique <- read.csv("historique.csv")
       usethis::use_data(historique, overwrite = TRUE)
