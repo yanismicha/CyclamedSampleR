@@ -126,15 +126,6 @@ mod_TabAccueil_server <- function(id){
       ))
     })
 
-    output$download_guide <- downloadHandler(
-      filename = function() {
-        "guide_utilisateur.pdf"
-      },
-      content = function(file) {
-        file.copy(system.file("app/www/Guide_utilisateur.pdf", package = "CyclamedSampleR"), file)
-      }
-    )
-
 
   })
 }

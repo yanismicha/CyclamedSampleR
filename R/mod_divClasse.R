@@ -143,27 +143,30 @@ mod_divClasse_server <- function(id,r){
 
     # affichage du site tire
      output$site1 <- renderUI({
-       if(is.null(input$choix1))
+       if(r[[paste0("site",nb)]]=="")
           ""
        else{
          # on recupere l'indice du site tiré
-         indice_site <- match(input$choix1, r$classe[[paste0("classe",nb)]])
+         indice_site <- match(r[[paste0("site",nb)]], r$classe[[paste0("classe",nb)]])
          #  cas du site situé en outre mer
          if (!is.na(indice_site) && isOutreMer(Tonnage, r$classe, nb)[indice_site])
-           res <- paste("<span class='label label-info'>",input$choix1, "(Outre Mer)</span>")
+           res <- paste("<span class='label label-info'>",r[[paste0("site",nb)]], "(Outre Mer)</span>")
 
          # cas du site avec compacteur
-         else if (r$data[r$data$Site ==input$choix1,"Compacteur"]== 1)
-           res <- paste("<span class='label label-danger'><i class='fa-solid fa-dumpster fa-beat' style='--fa-animation-duration: 4s;'></i>", input$choix1, "</span>")
+         else if (r$data[r$data$Site ==r[[paste0("site",nb)]],"Compacteur"]== 1)
+           res <- paste("<span class='label label-danger'><i class='fa-solid fa-dumpster fa-beat' style='--fa-animation-duration: 4s;'></i>", r[[paste0("site",nb)]], "</span>")
 
          #cas du site classique
          else
-           res <- paste("<span class='label label-primary'>",input$choix1, "</span>")
+           res <- paste("<span class='label label-primary'>",r[[paste0("site",nb)]], "</span>")
          HTML(res)
        }
 
         })
 
+     observeEvent(input$choix1, {
+       r[[paste0("site",nb)]] <- input$choix1
+     })
      # tirage
       observeEvent(r$random, {
         if (isTRUE(r$random)){
