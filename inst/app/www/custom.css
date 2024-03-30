@@ -1,5 +1,10 @@
 /* custom.css */
 
+/* Styles pour le corps de l'interface*/
+.content-wrapper {
+        height: 100vh; /* Ajuste la hauteur à 100% de la hauteur de la vue du navigateur */
+        overflow-y: auto; /* Active la barre de défilement verticale si nécessaire */
+      }
 /* Styles pour le sidebarPanel */
 .custom-sidebar {
     background-color: #ecf0f5; /* Couleur de fond du sidebarPanel */
@@ -12,6 +17,7 @@
 
 
 
+/* Styles pour les icones informations */
 
 .custom-icon {
   font-size: 18px; /* Taille de l'icône */
@@ -19,6 +25,7 @@
   margin-right: 20px;
 }
 
+/* Styles pour les cadres */
 
 .custom-div {
     padding: 10px 20px;
@@ -29,6 +36,7 @@
 
 
 
+/* Styles pour les menus déroulants */
 
 .custom-dropdown {
     box-shadow: 0 0 0 transparent, 0 0 0 transparent, 2px 1px 5px #d6d6d6;
@@ -37,6 +45,7 @@
 
 
 
+/* Styles pour les popups */
 
 .custom-header {
   background-color: #e9ecef;
@@ -47,6 +56,9 @@
   background-color: white;
   padding: 10px;
 }
+
+
+/* Styles pour les titres */
 
 .custom-title {
     font-family: 'Roboto', sans-serif;
