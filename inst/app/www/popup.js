@@ -35,14 +35,15 @@ $(document).ready(function() {
 
     function initPopColor() {
         $('#info_icon').popover({
-            content: '<div class="custom-header">Code couleur' +
-                ':</div><div class="custom-body"><span class="label label-danger"><i class="fa-solid fa-dumpster"></i>Compacteur</span>' +
-                '<br><br><span class="label label-info">Outre Mer</span>' +
-                '<br><br><span class="label label-primary">Site classique</span>',
-            placement: 'bottom',
-            trigger: 'hover',
-            html: true
-        });
+    content: '<div class="custom-header">Code couleur' +
+        ':</div><div class="custom-body"><span class="label label-danger">Compacteur</span>' +
+        '<br><br><span class="label label-info">Outre Mer</span>' +
+        '<br><br><span class="label label-primary">Site classique</span>',
+    placement: 'bottom',
+    trigger: 'hover',
+    html: true
+});
+
     }
 
 

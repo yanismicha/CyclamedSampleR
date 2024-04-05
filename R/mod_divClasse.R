@@ -38,10 +38,8 @@ mod_divClasse_ui <- function(id){
             width = 2,
             pickerInput(
               inputId = ns("choix1"),
-              #label = "Choix d'un autre site:",
               choices = NULL,
               options = pickerOptions(
-                  # title = "Sites:  ",
                   maxOptions = 1,
                   noneSelectedText = "Choix site",
                   header = paste("Choix Site classe",substr(id, nchar(id), nchar(id)),":"),
@@ -60,7 +58,6 @@ mod_divClasse_ui <- function(id){
           column(
             width = 2,
             offset = ifelse(id == "cadre5",8,6),
-            #shinyjs::disabled(
               switchInput(
                 inputId = ns("Id1"),
                 label = NULL,
@@ -70,14 +67,6 @@ mod_divClasse_ui <- function(id){
                 disabled = TRUE,
                 size='small'
               )
-              # prettySwitch(
-              #   # bouton pour garder le site ou non
-              #   inputId = ns("Id1"),
-              #   label = HTML('<i class="fas fa-lock-open"></i>'),
-              #   status = "success",
-              #   value = FALSE,
-              #   fill = TRUE,
-              # )),
           )
         )
       )
@@ -103,42 +92,28 @@ mod_divClasse_server <- function(id,r){
       r[[paste0("switch",nb)]] <- input$Id1
 
       # maj du choix des sites par classe
-      if(input$Id1){
-        #shinyjs::hide("choix1")
-        updatePickerInput(session,"choix1",choices =  r$classe[[paste0("classe",nb)]],
+      if(input$Id1) {
+        # Si le SwitchInput est TRUE
+        updatePickerInput(session, "choix1",
+                          choices =  r$classe[[paste0("classe", nb)]],
                           choicesOpt = list(
-                              content = ifelse(
-                                # on regarde si le site est outre mer
-                                isOutreMer(Tonnage, r$classe, nb),
-                                sprintf("<span class='label label-%s'>%s</span>", "info",paste(r$classe[[paste0("classe", nb)]],"(Outre Mer)")),
-                                # on regarde si le site a un compacteur
-                                ifelse(r$data[r$data$Site %in% r$classe[[paste0("classe", nb)]], "Compacteur"] == 1,
-                                       sprintf("<span class='label label-%s'><span class='fa-solid fa-dumpster fa-beat' style='--fa-animation-duration: 4s;'></span> %s</span>", "danger", r$classe[[paste0("classe", nb)]]),
-                                       sprintf("<span class='label label-%s'>%s</span>", "primary",r$classe[[paste0("classe", nb)]])
-                                )
+                            content = ifelse(
+                              # on regarde si le site est outre mer
+                              isOutreMer(Tonnage, r$classe, nb),
+                              sprintf("<span class='label label-%s'>%s</span>", "info",paste(r$classe[[paste0("classe", nb)]],"(Outre Mer)")),
+                              # on regarde si le site a un compacteur
+                              ifelse(r$data[r$data$Site %in% r$classe[[paste0("classe", nb)]], "Compacteur"] == 1,
+                                     sprintf("<span class='label label-%s'><img src='www/compact_cyclamed.png' alt='Votre image' style='max-width: 24px; max-height: 24px;'> %s</span>", "danger", r$classe[[paste0("classe", nb)]]),
+                                     sprintf("<span class='label label-%s'>%s</span>", "primary",r$classe[[paste0("classe", nb)]])
                               )
+                            )
                           ),
-                        #choix du site tiré
-                        selected =  ifelse(r[[paste0("site",nb)]]== "",NULL,r[[paste0("site",nb)]])
+                          selected =  ifelse(r[[paste0("site",nb)]]== "",NULL,r[[paste0("site",nb)]])
         )
       }
 
-
-
-      #   shinyjs::show("choix1")
-
-
-      # affichage de l'icone compacteur
-      # if(r[[paste0("site",nb)]]!= "" && r$data[r$data$Site == r[[paste0("site",nb)]],"Compacteur"]==1){
-      #   shinyjs::show("trash-icon")
-      # }
-      # else{
-      #   shinyjs::hide("trash-icon")
-      # }
-
-
-
     })
+
 
 
     # affichage du site tire
@@ -154,7 +129,7 @@ mod_divClasse_server <- function(id,r){
 
          # cas du site avec compacteur
          else if (r$data[r$data$Site ==r[[paste0("site",nb)]],"Compacteur"]== 1)
-           res <- paste("<span class='label label-danger'><i class='fa-solid fa-dumpster fa-beat' style='--fa-animation-duration: 4s;'></i>", r[[paste0("site",nb)]], "</span>")
+           res <- paste("<span class='label label-danger'><img src='www/compact_cyclamed.png' alt='Votre image' style='max-width: 24px; max-height: 24px;'>", r[[paste0("site",nb)]], "</span>")
 
          #cas du site classique
          else
@@ -164,20 +139,21 @@ mod_divClasse_server <- function(id,r){
 
         })
 
+     # on recupère le choix du site dans le menu déroulant
      observeEvent(input$choix1, {
        r[[paste0("site",nb)]] <- input$choix1
      })
      # tirage
       observeEvent(r$random, {
         if (isTRUE(r$random)){
-          #shinyjs::enable("Id1")
-          updateSwitchInput(session,"Id1",disabled = FALSE)
-          if(input$Id1){r[[paste0("site",nb)]]}
-          else {
+          updateSwitchInput(session,"Id1",disabled = FALSE,value = TRUE) # on active l"interrupteur
+          if(input$Id1){r[[paste0("site",nb)]] # on garde le meme tirage
+
+          }
+          else {# on tire un site au hasard pour la classe nb
             nouvelle_valeur <- sample(r$classe[[paste0("classe",nb)]], 1, replace = FALSE)
             r[[paste0("site",nb)]] <- nouvelle_valeur
           }
-          updatePrettySwitch(session,"Id1",value=TRUE)
         }
 
       })
