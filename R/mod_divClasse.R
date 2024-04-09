@@ -143,6 +143,7 @@ mod_divClasse_server <- function(id,r){
      observeEvent(input$choix1, {
        r[[paste0("site",nb)]] <- input$choix1
      })
+
      # tirage
       observeEvent(r$random, {
         if (isTRUE(r$random)){
@@ -158,7 +159,14 @@ mod_divClasse_server <- function(id,r){
 
       })
 
+      # récupération du dernier tirage
+      observeEvent(r$last_random, {
+        if (isTRUE(r$last_random)){
+          updateSwitchInput(session,"Id1",disabled = FALSE,value = TRUE) # on active l"interrupteur
+          r[[paste0("site",nb)]] <- r$hist[[paste0("Site",nb)]][1]
+        }
 
+      })
 
 
   })

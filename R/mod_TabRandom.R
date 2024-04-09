@@ -105,7 +105,8 @@ mod_TabRandom_ui <- function(id){
                   HTML("Classe 5 <i id='info_icon5' class='fa-solid fa-circle-info fa-beat-fade custom-icon' style='--fa-animation-duration: 4s'></i>")
                 ),
                 mod_divClasse_ui("cadre5")
-            )
+            ),
+            actionBttn(inputId = ns("load_last_random"),label = "Charger le dernier tirage",size="xs",style = "material-flat")
           )
   )
 }
@@ -121,6 +122,8 @@ mod_TabRandom_server <- function(id,r){
       # on stocke la valeur du popup confirmation pour l'utiliser dans le module divClasse
       r$random <- input$confirmation_random
 
+      # on stocke la valeur du popup last_confirmation pour l'utiliser dans le module divClasse
+      r$last_random <- input$confirmation_last_random
 
       # on affiche le boutton de sauvegarde du tirage si tout les switchs sont a TRUE
       if(r$switch1&&r$switch2&&r$switch3&&r$switch4&&r$switch5){
@@ -191,9 +194,29 @@ mod_TabRandom_server <- function(id,r){
     })
 
 
+    ####################################Tirage####################################
+
+
+    # création d'un popup confirmation lorsque l'on appui sur le bouton random
+    observeEvent(input$randall,{
+      confirmSweetAlert(
+        session = session, inputId = "confirmation_random", type = "info",
+        title = "Etes vous sur de vouloir réaliser un tirage des sites?",
+        btn_labels = c("Non", "Oui")
+      )
+
+    })
 
 
 
+    ## Charger le dernier tirage sauvegarder ##
+    observeEvent(input$load_last_random,{
+      confirmSweetAlert(
+        session = session, inputId = "confirmation_last_random", type = "info",
+        title = "Etes vous sur de vouloir récupérer le dernier tirage des sites?",
+        btn_labels = c("Non", "Oui")
+      )
+    })
 
 
 
@@ -244,8 +267,10 @@ mod_TabRandom_server <- function(id,r){
       write.csv(r$hist,"historique.csv",row.names = FALSE)
       historique <- read.csv("historique.csv")
       usethis::use_data(historique, overwrite = TRUE)
+
     })
 
+    ## Popup permettant d'afficher l'historique ##
 
     observeEvent(input$popup_history, {
 
@@ -263,15 +288,7 @@ mod_TabRandom_server <- function(id,r){
 
 
 
-    # création d'un popup confirmation lorsque l'on appui sur le bouton random
-    observeEvent(input$randall,{
-      confirmSweetAlert(
-        session = session, inputId = "confirmation_random", type = "info",
-        title = "Etes vous sur de vouloir réaliser un tirage des sites?",
-        btn_labels = c("Non", "Oui")
-      )
 
-    })
 
 
 
