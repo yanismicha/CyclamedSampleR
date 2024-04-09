@@ -4,6 +4,86 @@ test_that("isOutreMer works", {
   expect_equal(object = length(isOutreMer(Tonnage)), expected = nrow(Tonnage))
 })
 
+test_that("scatterCy returns a plotly object", {
+  result <- scatterCy(Tonnage,NULL,NULL,"Sans Compacteur")
+  # Vérifier que le résultat est un objet plotly
+  expect_true("plotly" == class(result)[1])
+})
+
+proportions_compacteurs <- 
+      Tonnage %>%
+        mutate(Compacteur = ifelse(Compacteur == 1, "Avec Compacteur", "Sans Compacteur")) %>%
+        group_by(Compacteur) %>%
+        summarise(Count = dplyr::n()) %>%
+        mutate(Proportion = Count / sum(Count))
+test_that("pieCy returns a plotly object", {
+  result <- pieCy(proportions_compacteurs)
+  # Vérifier que le résultat est un objet plotly
+  expect_true("plotly" == class(result)[1])
+})
+
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+data_copy <- Tonnage
+data_copy$classe <- NA
+data_copy$classe <- sapply(data_copy$Site, function(site) {
+  for(i in 1:5){
+    if (site %in% r$classe[[paste0("classe",i)]])
+    return(i)
+  }
+  data_copy
+})
+test_that("BoxCy returns a plotly object", {
+  result <- BoxCy(data_copy,NULL,NULL,"Sans Compacteur")
+  # Vérifier que le résultat est un objet plotly
+  expect_true("plotly" == class(result)[1])
+})
+
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+test_that("summarise_data correctly summarises and assigns class_name", {
+# Utiliser la fonction sur les données de test
+summarised <- summarise_data(r$data, Region, r)
+
+# Vérifier que les colonnes attendues sont présentes
+expect_true(all(c("TotalTonnage", "NombreSites", "Proportion") %in% names(summarised)))
 
 
+})
 
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+data_copy <- Tonnage
+data_copy$classe <- NA
+data_copy$classe <- sapply(data_copy$Site, function(site) {
+  for(i in 1:5){
+    if (site %in% r$classe[[paste0("classe",i)]])
+    return(i)
+  }
+  data_copy
+})
+
+totalTonnageParClasse <- summarise_data(data_copy,classe,r)
+
+colorsM <- c("red", "green", "blue")
+colorsR <- c("orange", "purple", "cyan")
+
+totalTonnageParClasse <- summarise_data(data_copy,classe,r)
+test_that("BarCy returns a plotly object", {
+  result <- BarCy(viewType = "Tonnage par classe",
+      colorsM = colorsM,
+      colorsR = colorsR,
+      proportions = NULL,
+      totalTonnageParClasse = totalTonnageParClasse,
+      totalTonnageParRegion = NULL,
+      totalTonnageParMaison = NULL,
+      sitesOutreMer = NULL)
+  # Vérifier que le résultat est un objet plotly
+  expect_true("plotly" == class(result)[1])
+})

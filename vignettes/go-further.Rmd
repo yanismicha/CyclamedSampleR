@@ -37,38 +37,98 @@ classes <- stratopt(Tonnage)
 isOutreMer(Tonnage,classes,1)
 ```
 
-```{r examples-use_darkmode}
-require(shiny)
-vars <- setdiff(names(iris), "Species")
-ui <- fluidPage(
-  titlePanel("example App"), 
-  # Setup
-  use_darkmode(),
-    sidebarPanel(
-      selectInput('xcol', 'X Variable', vars),
-     selectInput('ycol', 'Y Variable', vars, selected = vars[[2]]),
-     numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
-    )
-)
-
+```{r examples-scatterCy}
+scatterCy(Tonnage,NULL,NULL,"Sans Compacteur")
 ```
 
-```{r examples-darkmode}
-require(shiny)
-vars <- setdiff(names(iris), "Species")
-ui <- fluidPage(
-  titlePanel("example App"), 
-  # Setup
-  use_darkmode(),
-    sidebarPanel(
-      selectInput('xcol', 'X Variable', vars),
-     selectInput('ycol', 'Y Variable', vars, selected = vars[[2]]),
-     numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+```{r examples-pieCy}
+proportions_compacteurs <- 
+      Tonnage %>%
+        mutate(Compacteur = ifelse(Compacteur == 1, "Avec Compacteur", "Sans Compacteur")) %>%
+        group_by(Compacteur) %>%
+        summarise(Count = dplyr::n()) %>%
+        mutate(Proportion = Count / sum(Count))
+
+pieCy(proportions_compacteurs)
+```
+
+```{r examples-BoxCy}
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+data_copy <- Tonnage
+data_copy$classe <- NA
+data_copy$classe <- sapply(data_copy$Site, function(site) {
+  for(i in 1:5){
+    if (site %in% r$classe[[paste0("classe",i)]])
+    return(i)
+  }
+  data_copy
+})
+BoxCy(data_copy,NULL,NULL,NULL)
+```
+
+```{r examples-summarise_data}
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+summarise_data(r$data,Region,r)
+```
+
+```{r examples-BarCy}
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+data_copy <- Tonnage
+data_copy$classe <- NA
+data_copy$classe <- sapply(data_copy$Site, function(site) {
+  for(i in 1:5){
+    if (site %in% r$classe[[paste0("classe",i)]])
+    return(i)
+  }
+  data_copy
+})
+
+totalTonnageParClasse <- summarise_data(data_copy,classe,r)
+
+totalTonnageParRegion <- summarise_data(data_copy,Region,r)
+
+totalTonnageParMaison <- summarise_data(data_copy,Maison.Mere,r)
+
+
+data_copy$IsOutreMer <- isOutreMer(data_copy)
+sites_outre_mer <- summarise_data(data_copy %>% filter(IsOutreMer), classe, r)
+
+proportions <- 
+data_copy %>%
+  group_by(classe) %>%
+  summarise(Count = dplyr::n(),
+            ProportionCompacteur = mean(Compacteur),
+            MinTonnage = min(Tonnages.DIM, na.rm = TRUE),
+            MaxTonnage = max(Tonnages.DIM, na.rm = TRUE)) %>%
+  mutate(
+    class_name = dplyr::case_when(
+      classe == 1 ~ paste("\u2264", r$classe$bornes1, " tonnes"),
+      classe == 2 ~ paste("[", r$classe$bornes1, ";", r$classe$bornes2, ") tonnes"),
+      classe == 3 ~ paste("[", r$classe$bornes2, ";", r$classe$bornes3, ") tonnes"),
+      classe == 4 ~ paste("[", r$classe$bornes3, ";", r$classe$bornes4, ") tonnes"),
+      classe == 5 ~ paste("\u2265", r$classe$bornes4, " tonnes")
     )
-)
-server <- function(input,output,session){
-  darkmode(label = '🌓')
-  
-}
+  )
+
+colorsM <- c("red", "green", "blue")
+colorsR <- c("orange", "purple", "cyan")
+
+BarCy(viewType = "Tonnage par classe",
+      colorsM = colorsM,
+      colorsR = colorsR,
+      proportions = proportions,
+      totalTonnageParClasse = totalTonnageParClasse,
+      totalTonnageParRegion = totalTonnageParRegion,
+      totalTonnageParMaison = totalTonnageParMaison,
+      sitesOutreMer = sites_outre_mer)
 ```
 
