@@ -42,6 +42,7 @@ scatterCy(Tonnage,NULL,NULL,"Sans Compacteur")
 ```
 
 ```{r examples-pieCy}
+require(dplyr)
 proportions_compacteurs <- 
       Tonnage %>%
         mutate(Compacteur = ifelse(Compacteur == 1, "Avec Compacteur", "Sans Compacteur")) %>%
@@ -50,23 +51,6 @@ proportions_compacteurs <-
         mutate(Proportion = Count / sum(Count))
 
 pieCy(proportions_compacteurs)
-```
-
-```{r examples-BoxCy}
-r <- NULL
-r$data <- Tonnage
-r$classe <- stratopt(r$data)
-
-data_copy <- Tonnage
-data_copy$classe <- NA
-data_copy$classe <- sapply(data_copy$Site, function(site) {
-  for(i in 1:5){
-    if (site %in% r$classe[[paste0("classe",i)]])
-    return(i)
-  }
-  data_copy
-})
-BoxCy(data_copy,NULL,NULL,NULL)
 ```
 
 ```{r examples-summarise_data}
@@ -78,6 +62,7 @@ summarise_data(r$data,Region,r)
 ```
 
 ```{r examples-BarCy}
+require(dplyr)
 r <- NULL
 r$data <- Tonnage
 r$classe <- stratopt(r$data)
@@ -99,7 +84,7 @@ totalTonnageParRegion <- summarise_data(data_copy,Region,r)
 totalTonnageParMaison <- summarise_data(data_copy,Maison.Mere,r)
 
 
-data_copy$IsOutreMer <- isOutreMer(data_copy)
+data_copy$IsOutreMer <- CyclamedSampleR::isOutreMer(data_copy)
 sites_outre_mer <- summarise_data(data_copy %>% filter(IsOutreMer), classe, r)
 
 proportions <- 

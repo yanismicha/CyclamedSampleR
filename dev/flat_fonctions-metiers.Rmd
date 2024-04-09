@@ -8,9 +8,10 @@ editor_options:
 ```{r development, include=FALSE}
 library(testthat)
 library(shiny)
-library(dplyr)
 library(plotly)
 library(stratification)
+library(magrittr)
+library(dplyr)
 ```
 
 # Fonctions métiers de mon app
@@ -109,7 +110,7 @@ test_that("isOutreMer works", {
 #' @param selected_maison Une maison mère une valeur null
 #' @param selected_region Région ou une valeur null
 #' @param selectedCompacteur booleen = "Avec Compacteur"/autre ou une valeur null
-#'
+#' @import dplyr
 #' @return Un graphique scatter plot en fonction des région/maison mère est la présence d'un compacteur
 #' @export
 #'
@@ -216,8 +217,7 @@ test_that("scatterCy returns a plotly object", {
 #' permet de afficher le graphique en secteur de proportion des compacteur
 #'
 #' @param proportions_compacteurs un dataframe 
-
-#'
+#' @import magrittr
 #' @return Un graphique pie plot en fonction de la proportion de compacteur
 #' @export
 #'
@@ -239,6 +239,7 @@ pieCy <- function(proportions_compacteurs){
 ```
 
 ```{r examples-pieCy}
+require(dplyr)
 proportions_compacteurs <- 
       Tonnage %>%
         mutate(Compacteur = ifelse(Compacteur == 1, "Avec Compacteur", "Sans Compacteur")) %>%
@@ -248,7 +249,6 @@ proportions_compacteurs <-
 
 pieCy(proportions_compacteurs)
 ```
-
 
 ```{r tests-pieCy}
 proportions_compacteurs <- 
@@ -264,6 +264,8 @@ test_that("pieCy returns a plotly object", {
 })
 ```
 
+
+
 ```{r function-BoxCy}
 #' BoxCy
 #' permet d'afficher le graphique en boîte du tonnage en fonction des classes
@@ -272,7 +274,7 @@ test_that("pieCy returns a plotly object", {
 #' @param selected_region Région ou une valeur null
 #' @param selected_maison Une maison mère une valeur null
 #' @param selectedCompacteur booleen = "Avec Compacteur"/autre ou une valeur null
-#'
+#' @import dplyr
 #' @return Un graphique en boite du tonnage en fonction des classe
 #' @export
 #'
@@ -326,23 +328,6 @@ BoxCy <- function(data,selected_region,selected_maison,selectedCompacteur){
 ```
 
 
-```{r examples-BoxCy}
-r <- NULL
-r$data <- Tonnage
-r$classe <- stratopt(r$data)
-
-data_copy <- Tonnage
-data_copy$classe <- NA
-data_copy$classe <- sapply(data_copy$Site, function(site) {
-  for(i in 1:5){
-    if (site %in% r$classe[[paste0("classe",i)]])
-    return(i)
-  }
-  data_copy
-})
-BoxCy(data_copy,NULL,NULL,NULL)
-```
-
 
 
 ```{r tests-BoxCy}
@@ -374,7 +359,7 @@ test_that("BoxCy returns a plotly object", {
 #' @param data un dataframe 
 #' @param group_var variable utilisé pour le group by
 #' @param dataBorne dataframe contenant les bornes 
-#'
+#' @import dplyr
 #' @return Un data frame tibble.
 #' @export
 #'
@@ -447,7 +432,7 @@ expect_true(all(c("TotalTonnage", "NombreSites", "Proportion") %in% names(summar
 #' @param totalTonnageParRegion Les données sur le tonnage total par région.
 #' @param totalTonnageParMaison Les données sur le tonnage total par maison mère.
 #' @param sitesOutreMer Les données sur le nombre de sites en Outre-Mer par classe.
-#' 
+#' @import dplyr
 #' @return Un graphique Plotly généré selon le type de vue sélectionné.
 #' @export
 #'
@@ -510,8 +495,8 @@ BarCy <- function(viewType, colorsM, colorsR, proportions, totalTonnageParClasse
 
 ```
 
-
 ```{r examples-BarCy}
+require(dplyr)
 r <- NULL
 r$data <- Tonnage
 r$classe <- stratopt(r$data)
@@ -533,7 +518,7 @@ totalTonnageParRegion <- summarise_data(data_copy,Region,r)
 totalTonnageParMaison <- summarise_data(data_copy,Maison.Mere,r)
 
 
-data_copy$IsOutreMer <- isOutreMer(data_copy)
+data_copy$IsOutreMer <- CyclamedSampleR::isOutreMer(data_copy)
 sites_outre_mer <- summarise_data(data_copy %>% filter(IsOutreMer), classe, r)
 
 proportions <- 

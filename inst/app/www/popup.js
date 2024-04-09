@@ -47,10 +47,6 @@ $(document).ready(function() {
     }
 
 
-
-
-
-
       Shiny.addCustomMessageHandler("updatePopSite", function(message) {
           var i = message.i;
           var region = message.region;

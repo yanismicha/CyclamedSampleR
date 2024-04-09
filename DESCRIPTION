@@ -12,12 +12,14 @@ Depends:
     R (>= 2.10)
 Imports: 
     config (>= 0.3.2),
+    dplyr,
     DT,
     golem (>= 0.4.1),
-    jsonlite,
+    magrittr,
     plotly,
     reactable,
     reactablefmtr,
+    scales,
     shiny (>= 1.7.5),
     shinyBS,
     shinydashboard,
@@ -32,7 +34,8 @@ Suggests:
     rmarkdown,
     spelling,
     testthat (>= 3.0.0)
-VignetteBuilder: knitr
+VignetteBuilder: 
+    knitr
 Config/fusen/version: 0.5.2
 Config/testthat/edition: 3
 Encoding: UTF-8

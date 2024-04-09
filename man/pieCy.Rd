@@ -18,6 +18,7 @@ pieCy
 permet de afficher le graphique en secteur de proportion des compacteur
 }
 \examples{
+require(dplyr)
 proportions_compacteurs <- 
       Tonnage \%>\%
         mutate(Compacteur = ifelse(Compacteur == 1, "Avec Compacteur", "Sans Compacteur")) \%>\%

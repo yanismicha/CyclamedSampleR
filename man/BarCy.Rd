@@ -41,6 +41,7 @@ BarCy
 Crée et affiche des graphiques basés sur le type de vue sélectionné.
 }
 \examples{
+require(dplyr)
 r <- NULL
 r$data <- Tonnage
 r$classe <- stratopt(r$data)
@@ -62,7 +63,7 @@ totalTonnageParRegion <- summarise_data(data_copy,Region,r)
 totalTonnageParMaison <- summarise_data(data_copy,Maison.Mere,r)
 
 
-data_copy$IsOutreMer <- isOutreMer(data_copy)
+data_copy$IsOutreMer <- CyclamedSampleR::isOutreMer(data_copy)
 sites_outre_mer <- summarise_data(data_copy \%>\% filter(IsOutreMer), classe, r)
 
 proportions <- 

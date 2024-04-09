@@ -23,19 +23,3 @@ Un graphique en boite du tonnage en fonction des classe
 BoxCy
 permet d'afficher le graphique en boîte du tonnage en fonction des classes
 }
-\examples{
-r <- NULL
-r$data <- Tonnage
-r$classe <- stratopt(r$data)
-
-data_copy <- Tonnage
-data_copy$classe <- NA
-data_copy$classe <- sapply(data_copy$Site, function(site) {
-  for(i in 1:5){
-    if (site \%in\% r$classe[[paste0("classe",i)]])
-    return(i)
-  }
-  data_copy
-})
-BoxCy(data_copy,NULL,NULL,NULL)
-}

@@ -1,4 +1,11 @@
-"Date","Site1","Site2","Site3","Site4","Site5","Etat","Commentaire","Annee"
-"07/03/2024 11:26","ALLIANCE Ajaccio","CERP BRETAGNE A. Brest ","CERP ROUEN St-Lo","PHOENIX ST Alban","ALLIANCE Drancy","Valide","changement site classe4","2024"
-"07/03/2024 11:25","ALLIANCE Ajaccio","CERP BRETAGNE A. Brest ","CERP ROUEN St-Lo","PHOENIX Toulon/Ollioules","ALLIANCE Drancy","En attente de validation","compacteur classe4","2024"
-"05/03/2024 07:10","Site1","Site2","Site3","Site4","Site5","En attente de validation","ceci est un test","2024"
+"Date","Site1","Site2","Site3","Site4","Site5","Etat","Commentaire","Caracterisation"
+"09/04/2024 09:42","CERP BRETAGNE A. Dinan","CERP R.R.M. Colmar","OCP Chantepie","CERP ROUEN Boulogne s/Mer","OCP St-Etienne","En attente de validation","",2024
+"02/04/2024 08:15","CERP BRETAGNE A. Dinan","ALLIANCE Agen / Le Passage","PHOENIX La Chaussee St-Victor","ALLIANCE Lezennes / Lille","CERP ROUEN Les Sorinieres","En attente de validation","compacteur classe 5",2024
+"30/03/2024 18:34","ALLIANCE Marsac / l Isle","ALLIANCE Chateauroux (Deols)","OCP Illkirch","CERP R.R.M. Mandelieu","ALLIANCE Longjumeau","Valide","",2024
+"27/03/2024 18:48","COPHARMAY","CERP BRETAGNE A. St-Martin des Champs","CERP ROUEN St-Lo","OCP Vaux-le-Penil","ALLIANCE Longjumeau","Non valide","",2024
+"08/03/2024 12:14","UBIPHARM Mayotte","ALLIANCE Clermont-Ferrand","SOGIPHAR Castelnau","OCP St Pardoux l Ortigier","CERP ROUEN Les Sorinieres","Non valide","outremer",2024
+"08/03/2024 10:04","OCP Ste-Savine","CERP BRETAGNE A. Trelaze","CERP ROUEN Lievin","ALLIANCE SORIGNY","CERP ROUEN Les Sorinieres","Valide","",2024
+"08/03/2024 09:59","OCP Ste-Savine","CERP BRETAGNE A. Trelaze","OCP Tarbes (Semeac)","CERP ROUEN Herouville St-Clair","CERP ROUEN Les Sorinieres","En attente de validation","compacteur classe 3/4/5",2024
+"07/03/2024 11:26","ALLIANCE Ajaccio","CERP BRETAGNE A. Brest ","CERP ROUEN St-Lo","PHOENIX ST Alban","ALLIANCE Drancy","Valide","changement site classe4",2024
+"07/03/2024 11:25","ALLIANCE Ajaccio","CERP BRETAGNE A. Brest ","CERP ROUEN St-Lo","PHOENIX Toulon/Ollioules","ALLIANCE Drancy","En attente de validation","compacteur classe4",2024
+"05/03/2024 07:10","Site1","Site2","Site3","Site4","Site5","En attente de validation","ceci est un test",2024

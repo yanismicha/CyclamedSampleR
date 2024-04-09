@@ -11,11 +11,12 @@
 #' @param totalTonnageParRegion Les données sur le tonnage total par région.
 #' @param totalTonnageParMaison Les données sur le tonnage total par maison mère.
 #' @param sitesOutreMer Les données sur le nombre de sites en Outre-Mer par classe.
-#' 
+#' @import dplyr
 #' @return Un graphique Plotly généré selon le type de vue sélectionné.
 #' @export
 #'
 #' @examples
+#' require(dplyr)
 #' r <- NULL
 #' r$data <- Tonnage
 #' r$classe <- stratopt(r$data)
@@ -37,7 +38,7 @@
 #' totalTonnageParMaison <- summarise_data(data_copy,Maison.Mere,r)
 #'
 #'
-#' data_copy$IsOutreMer <- isOutreMer(data_copy)
+#' data_copy$IsOutreMer <- CyclamedSampleR::isOutreMer(data_copy)
 #' sites_outre_mer <- summarise_data(data_copy %>% filter(IsOutreMer), classe, r)
 #'
 #' proportions <- 
@@ -133,25 +134,10 @@ BarCy <- function(viewType, colorsM, colorsR, proportions, totalTonnageParClasse
 #' @param selected_region Région ou une valeur null
 #' @param selected_maison Une maison mère une valeur null
 #' @param selectedCompacteur booleen = "Avec Compacteur"/autre ou une valeur null
-#'
+#' @import dplyr
 #' @return Un graphique en boite du tonnage en fonction des classe
 #' @export
 #'
-#' @examples
-#' r <- NULL
-#' r$data <- Tonnage
-#' r$classe <- stratopt(r$data)
-#'
-#' data_copy <- Tonnage
-#' data_copy$classe <- NA
-#' data_copy$classe <- sapply(data_copy$Site, function(site) {
-#'   for(i in 1:5){
-#'     if (site %in% r$classe[[paste0("classe",i)]])
-#'     return(i)
-#'   }
-#'   data_copy
-#' })
-#' BoxCy(data_copy,NULL,NULL,NULL)
 BoxCy <- function(data,selected_region,selected_maison,selectedCompacteur){
   palette_verte <- c("#00e000", "#00c100", "#00a200","#008300","#006400")
   
@@ -229,12 +215,12 @@ isOutreMer <- function(data,classes=NULL,nb=1){
 #' permet de afficher le graphique en secteur de proportion des compacteur
 #'
 #' @param proportions_compacteurs un dataframe 
-
-#'
+#' @import magrittr
 #' @return Un graphique pie plot en fonction de la proportion de compacteur
 #' @export
 #'
 #' @examples
+#' require(dplyr)
 #' proportions_compacteurs <- 
 #'       Tonnage %>%
 #'         mutate(Compacteur = ifelse(Compacteur == 1, "Avec Compacteur", "Sans Compacteur")) %>%
@@ -266,7 +252,7 @@ pieCy <- function(proportions_compacteurs){
 #' @param selected_maison Une maison mère une valeur null
 #' @param selected_region Région ou une valeur null
 #' @param selectedCompacteur booleen = "Avec Compacteur"/autre ou une valeur null
-#'
+#' @import dplyr
 #' @return Un graphique scatter plot en fonction des région/maison mère est la présence d'un compacteur
 #' @export
 #'
@@ -398,7 +384,7 @@ return(c(list_opt,bornes=cum$bh))
 #' @param data un dataframe 
 #' @param group_var variable utilisé pour le group by
 #' @param dataBorne dataframe contenant les bornes 
-#'
+#' @import dplyr
 #' @return Un data frame tibble.
 #' @export
 #'
