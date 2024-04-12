@@ -152,6 +152,9 @@ mod_TabData_server <- function(id,r){
         currentData <- rbind(newRow,currentData)
         r$data <- currentData
       }
+      saveRDS(r$data,"Tonnage.rda")
+      Tonnage <- readRDS("Tonnage.rda")
+      usethis::use_data(Tonnage, overwrite = TRUE)
     })
 
 
@@ -167,6 +170,8 @@ mod_TabData_server <- function(id,r){
           )
         ))
       }
+
+
     })
 
     observeEvent(input$confirmDelete, {
@@ -247,5 +252,6 @@ mod_TabData_server <- function(id,r){
 
   })
 }
+
 
 
