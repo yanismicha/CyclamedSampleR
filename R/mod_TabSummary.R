@@ -65,9 +65,6 @@ mod_TabSummary_ui <- function(id){
 #' TabSummary Server Functions
 #'
 #' @noRd
-#' TabSummary Server Functions
-#'
-#' @noRd
 mod_TabSummary_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns

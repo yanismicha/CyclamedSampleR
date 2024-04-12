@@ -129,7 +129,7 @@ mod_divClasse_server <- function(id,r){
 
          # cas du site avec compacteur
          else if (r$data[r$data$Site ==r[[paste0("site",nb)]],"Compacteur"]== 1)
-           res <- paste("<span class='label label-danger'><img src='www/compact_cyclamed.png' alt='Votre image' style='max-width: 24px; max-height: 24px;'>", r[[paste0("site",nb)]], "</span>")
+           res <- paste("<span class='label label-danger'><img src='www/compact_cyclamed.png' alt='Compacteur' style='max-width: 24px; max-height: 24px;'>", r[[paste0("site",nb)]], "</span>")
 
          #cas du site classique
          else

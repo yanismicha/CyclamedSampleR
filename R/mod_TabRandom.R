@@ -142,7 +142,6 @@ mod_TabRandom_server <- function(id,r){
 
 
 
-
       for(i in 1:5){
         ####################################Popup information Sites####################################
         region <- r$data[r$data$Site == r[[paste0("site",i)]], "Region"]
@@ -227,7 +226,7 @@ mod_TabRandom_server <- function(id,r){
       color <- ifelse(Tonnage$Compacteur==1,"#dd4b39",ifelse(isOutreMer(Tonnage),"#00c0ef","#3c8dbc"))
       DT::datatable(r$hist,
                     options = list(pageLength = 5,
-                                   lengthMenu = c(5,10,length(r$hist)),
+                                   lengthMenu = c(5,10,nrow(r$hist)),
                                    dom = "lfit",
                                    scrollX = TRUE,
                                    scrollY = TRUE,
@@ -250,14 +249,16 @@ mod_TabRandom_server <- function(id,r){
         col <- info$col[i]
         new_value <- info$value[i]
         if(i==8){
-          if (!new_value%in% c("Valide","En attente de validation","Non valide"))
-            r$hist[row,col]<- "Non valide"
+          if(tolower(new_value) %in% c("valide","validé","valider"))
+            r$hist[row,col]<- "Valide"
+          else if(substr(tolower(new_value),1,10) == "en attente")
+            r$hist[row,col]<- "En attente de validation"
           else
-            r$hist[row,col]<- new_value
+            r$hist[row,col]<- "Non valide"
         }
         else if(i == 10){
-          if(is.na(as.numeric(new_value))||as.numeric(new_value)<2024)
-            r$hist[row,col]<- as.numeric(format(Sys.Date(),"%Y"))
+          if(is.na(as.numeric(new_value))||as.numeric(new_value)<2024){# Ne rien faire
+          }
           else
             r$hist[row,col]<- new_value
         }
@@ -277,6 +278,7 @@ mod_TabRandom_server <- function(id,r){
       # Afficher le popup lorsque le bouton est cliqué
       showModal(modalDialog(
         title = "Historique des tirages",
+        HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 16px; --fa-animation-duration: 4s"></i>Double clique pour modifier &  <img src="www/ctrl.png" alt="Ctrl" style="width: 16px; height: 16px;"> + <img src="www/enter_key.png" alt="Entrée" style="width: 16px; height: 16px;"> pour enregistrer les modifications'),
         DTOutput(ns("history")),
         size = "l",
         easyClose = TRUE, footer = tagList(
@@ -332,7 +334,7 @@ mod_TabRandom_server <- function(id,r){
                                         Site5=r$site5,
                                         Etat = ifelse(input$Id2=="Oui","Valide","En attente de validation"),
                                         Commentaire=input$Comment,
-                                        Caracterisation=as.numeric(format(Sys.Date(),"%Y"))),r$hist)
+                                        Caracterisation=r$hist$Caracterisation[1]),r$hist)
       write.csv(r$hist,"historique.csv",row.names = FALSE)
       historique <- read.csv("historique.csv")
       usethis::use_data(historique, overwrite = TRUE)

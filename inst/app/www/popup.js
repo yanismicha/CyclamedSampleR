@@ -38,7 +38,7 @@ $(document).ready(function() {
     content: '<div class="custom-header">Code couleur' +
         ':</div><div class="custom-body"><span class="label label-danger">Compacteur</span>' +
         '<br><br><span class="label label-info">Outre Mer</span>' +
-        '<br><br><span class="label label-primary">Site classique</span>',
+        '<br><br><span class="label label-primary">Site classique</span></div>',
     placement: 'bottom',
     trigger: 'hover',
     html: true

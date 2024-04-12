@@ -27,8 +27,7 @@ Imports:
     shinyWidgets,
     stratification,
     usethis,
-    utils,
-    viridis
+    utils
 Suggests: 
     knitr,
     rmarkdown,

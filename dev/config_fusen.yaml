@@ -1,13 +1,26 @@
 flat_fonctions-metiers.Rmd:
   path: dev/flat_fonctions-metiers.Rmd
   state: active
-  R: R/stratopt.R
-  tests: tests/testthat/test-stratopt.R
+  R:
+  - R/barcy.R
+  - R/boxcy.R
+  - R/isoutremer.R
+  - R/piecy.R
+  - R/scattercy.R
+  - R/stratopt.R
+  - R/summarise_data.R
+  tests:
+  - tests/testthat/test-isoutremer.R
+  - tests/testthat/test-scattercy.R
+  - tests/testthat/test-piecy.R
+  - tests/testthat/test-boxcy.R
+  - tests/testthat/test-summarise_data.R
+  - tests/testthat/test-barcy.R
   vignettes: vignettes/go-further.Rmd
   inflate:
     flat_file: dev/flat_fonctions-metiers.Rmd
     vignette_name: Go further
     open_vignette: true
-    check: true
+    check: false
     document: true
     overwrite: ask
