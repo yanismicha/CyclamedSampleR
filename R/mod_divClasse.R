@@ -129,7 +129,7 @@ mod_divClasse_server <- function(id,r){
 
          # cas du site avec compacteur
          else if (r$data[r$data$Site ==r[[paste0("site",nb)]],"Compacteur"]== 1)
-           res <- paste("<span class='label label-danger'><img src='www/compact_cyclamed.png' alt='Votre image' style='max-width: 24px; max-height: 24px;'>", r[[paste0("site",nb)]], "</span>")
+           res <- paste("<span class='label label-danger'><img src='www/compact_cyclamed.png' alt='Compacteur' style='max-width: 24px; max-height: 24px;'>", r[[paste0("site",nb)]], "</span>")
 
          #cas du site classique
          else
@@ -143,6 +143,7 @@ mod_divClasse_server <- function(id,r){
      observeEvent(input$choix1, {
        r[[paste0("site",nb)]] <- input$choix1
      })
+
      # tirage
       observeEvent(r$random, {
         if (isTRUE(r$random)){
@@ -158,7 +159,14 @@ mod_divClasse_server <- function(id,r){
 
       })
 
+      # récupération du dernier tirage
+      observeEvent(r$last_random, {
+        if (isTRUE(r$last_random)){
+          updateSwitchInput(session,"Id1",disabled = FALSE,value = TRUE) # on active l"interrupteur
+          r[[paste0("site",nb)]] <- r$hist[[paste0("Site",nb)]][1]
+        }
 
+      })
 
 
   })

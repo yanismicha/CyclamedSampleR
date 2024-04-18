@@ -31,15 +31,27 @@ data("Tonnage")
 stratopt(Tonnage)$classe1
 ```
 
+# isOutreMer
+
+Cette fonction permet de connaitre les sites situés en territoires outre mers
+
 ```{r examples-isOutreMer}
 isOutreMer(Tonnage)
 classes <- stratopt(Tonnage)
 isOutreMer(Tonnage,classes,1)
 ```
 
+# scatterCy
+
+Cette fonction permet d'afficher le graphique de tonnage en fonction des rotations
+
 ```{r examples-scatterCy}
 scatterCy(Tonnage,NULL,NULL,"Sans Compacteur")
 ```
+
+# piecy
+
+Cette fonction permet d'afficher le graphique en secteur de proportion des compacteur
 
 ```{r examples-pieCy}
 require(dplyr)
@@ -53,6 +65,14 @@ proportions_compacteurs <-
 pieCy(proportions_compacteurs)
 ```
 
+# BoxCy
+
+Cette fonction permet d'afficher le graphique en boîte du tonnage en fonction des classes
+
+# summarise_data
+
+Cette fonction permet de creer un  data frame tibble selon une variable group by
+
 ```{r examples-summarise_data}
 r <- NULL
 r$data <- Tonnage
@@ -60,6 +80,10 @@ r$classe <- stratopt(r$data)
 
 summarise_data(r$data,Region,r)
 ```
+
+# BarCy
+
+Cette fonction permet de Créer et afficher des graphiques basés sur le type de vue sélectionné.
 
 ```{r examples-BarCy}
 require(dplyr)

@@ -15,7 +15,6 @@ Imports:
     dplyr,
     DT,
     golem (>= 0.4.1),
-    grDevices,
     magrittr,
     plotly,
     reactable,
@@ -26,11 +25,9 @@ Imports:
     shinydashboard,
     shinyjs,
     shinyWidgets,
-    stats,
     stratification,
     usethis,
-    utils,
-    viridis
+    utils
 Suggests: 
     knitr,
     rmarkdown,

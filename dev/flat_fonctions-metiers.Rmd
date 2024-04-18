@@ -65,7 +65,8 @@ stratopt(Tonnage)$classe1
 
 
 
-
+# isOutreMer
+Cette fonction permet de connaitre les sites situés en territoires outre mers
 ```{r function-isOutreMer}
 #' isOutreMer
 #' permet de connaitre les sites situés en territoires outre mers
@@ -102,9 +103,11 @@ test_that("isOutreMer works", {
 ```
 
 
+# scatterCy
+Cette fonction permet d'afficher le graphique de tonnage en fonction des rotations
 ```{r function-scatterCy}
 #' scatterCy
-#' permet de afficher le graphique de tonnage en fonction des rotations
+#' permet d'afficher le graphique de tonnage en fonction des rotations
 #'
 #' @param data un dataframe 
 #' @param selected_maison Une maison mère une valeur null
@@ -212,9 +215,11 @@ test_that("scatterCy returns a plotly object", {
 
 
 
+# piecy
+Cette fonction permet d'afficher le graphique en secteur de proportion des compacteur
 ```{r function-pieCy}
 #' pieCy
-#' permet de afficher le graphique en secteur de proportion des compacteur
+#' permet d'afficher le graphique en secteur de proportion des compacteur
 #'
 #' @param proportions_compacteurs un dataframe 
 #' @import magrittr
@@ -265,7 +270,8 @@ test_that("pieCy returns a plotly object", {
 ```
 
 
-
+# BoxCy
+Cette fonction permet d'afficher le graphique en boîte du tonnage en fonction des classes
 ```{r function-BoxCy}
 #' BoxCy
 #' permet d'afficher le graphique en boîte du tonnage en fonction des classes
@@ -275,8 +281,6 @@ test_that("pieCy returns a plotly object", {
 #' @param selected_maison Une maison mère une valeur null
 #' @param selectedCompacteur booleen = "Avec Compacteur"/autre ou une valeur null
 #' @import dplyr
-#' @importFrom grDevices colorRampPalette
-#' @importFrom stats quantile
 #' @return Un graphique en boite du tonnage en fonction des classe
 #' @export
 #'
@@ -354,6 +358,8 @@ test_that("BoxCy returns a plotly object", {
 ```
 
 
+# summarise_data
+Cette fonction permet de creer un  data frame tibble selon une variable group by
 ```{r function-summarise_data}
 #' summarise_data
 #' permet de creer un  data frame tibble selon une variable group by
@@ -422,9 +428,11 @@ expect_true(all(c("TotalTonnage", "NombreSites", "Proportion") %in% names(summar
 ```
 
 
+# BarCy
+Cette fonction permet de Créer et afficher des graphiques basés sur le type de vue sélectionné.
 ```{r function-BarCy}
 #' BarCy
-#' Crée et affiche des graphiques basés sur le type de vue sélectionné.
+#' Créer et affiche des graphiques basés sur le type de vue sélectionné.
 #'
 #' @param viewType Le type de vue à générer, tel que "Proportion de Compacteurs par Classe".
 #' @param colorsM Les couleurs à utiliser pour le graphique des Maisons Mères.
@@ -591,6 +599,5 @@ test_that("BarCy returns a plotly object", {
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/flat_fonctions-metiers.Rmd", vignette_name = "Go further")
+fusen::inflate(flat_file = "dev/flat_fonctions-metiers.Rmd", vignette_name = "Go further",check = FALSE)
 ```
-
