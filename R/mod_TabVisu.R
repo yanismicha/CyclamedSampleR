@@ -79,6 +79,9 @@ mod_TabVisu_ui <- function(id) {
 
 
 
+utils::globalVariables(c("Region", "Tonnages.DIM", "TotalTonnageRegion",
+                         "Proportion", "Maison.Mere", "TotalTonnageMaison",
+                         "Compacteur", "Count", "classe", "IsOutreMer","TotalTonnage"))
 
 
 #' TabVisu Server Functions
@@ -119,19 +122,22 @@ mod_TabVisu_server <- function(id,r){
       showModal(modalDialog(
         plotlyOutput(ns("modalPlot")),
         size = "m",
-        easyClose = TRUE,
         style = "background-color: #ecf0f5;",
         footer = modalButton("Fermer")
       ))
       output$modalPlot <- renderPlotly({
-        data = updatedData()
-        data_region <- data %>%
+        data_region = updatedData()
+        if(!is.null(selectedCompacteur())){
+          data_region <- data_region %>% filter(Compacteur == ifelse(selectedCompacteur() == "Avec Compacteur", 1, 0))
+        }
+        data_region <- data_region %>%
           filter(Region == selected_region()) %>%
           mutate(
             TotalTonnageRegion = sum(Tonnages.DIM, na.rm = TRUE),
             Proportion = Tonnages.DIM / TotalTonnageRegion
           ) %>%
           arrange(desc(Proportion))
+
         scaled_tonnage <- scales::rescale(data_region$Tonnages.DIM, to = c(0, 1))
         colors <- colorRampPalette(c("#0c8fce", "#0a5f9c", "#08306b"))(100)[as.integer(scaled_tonnage * 99) + 1]
         plot_ly(data = data_region, x = ~Tonnages.DIM, y = ~Site, type = 'bar', orientation = 'h', marker = list(color = colors),
@@ -148,23 +154,27 @@ mod_TabVisu_server <- function(id,r){
       # On récupère les maison mères avec la donnée y
       selected_maison(event_data("plotly_click", source = "maisonSelect")$y)
       selected_region(NULL) #Pour pouvoir selectioné une maison mère apres qu'une région a été selectioné
+
       #Boîte de dialogue contenant un graph plotly des sites selon une maison mère
       showModal(modalDialog(
         plotlyOutput(ns("modalPlot")),
         size = "m",
-        easyClose = TRUE,
         style = "background-color: #ecf0f5;",
         footer = modalButton("Fermer")
       ))
       output$modalPlot <- renderPlotly({
-        data = updatedData()
-        data_maison <- data %>%
+        data_maison = updatedData()
+        if(!is.null(selectedCompacteur())){
+          data_maison <- data_maison %>% filter(Compacteur == ifelse(selectedCompacteur() == "Avec Compacteur", 1, 0))
+        }
+        data_maison <- data_maison %>%
           filter(Maison.Mere == selected_maison()) %>%
           mutate(
             TotalTonnageMaison = sum(Tonnages.DIM, na.rm = TRUE),
             Proportion = Tonnages.DIM / TotalTonnageMaison
           ) %>%
           arrange(desc(Proportion))
+
         scaled_tonnage <- scales::rescale(data_maison$Tonnages.DIM, to = c(0, 1))
         colors <- colorRampPalette(c("#0c8fce", "#0a5f9c", "#08306b"))(100)[as.integer(scaled_tonnage * 99) + 1]
         plot_ly(data = data_maison, x = ~Tonnages.DIM, y = ~Site, type = 'bar', orientation = 'h', marker = list(color = colors),
