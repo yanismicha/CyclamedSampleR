@@ -8,6 +8,8 @@
 #' @param selected_maison Une maison mère une valeur null
 #' @param selectedCompacteur booleen = "Avec Compacteur"/autre ou une valeur null
 #' @import dplyr
+#' @importFrom grDevices colorRampPalette
+#' @importFrom stats quantile
 #' @return Un graphique en boite du tonnage en fonction des classe
 #' @export
 #'
