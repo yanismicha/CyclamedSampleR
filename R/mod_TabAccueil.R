@@ -87,7 +87,8 @@ mod_TabAccueil_ui <- function(id){
                     tags$li(h4("Statistiques:"),
                             tags$ul(
                               tags$li(h4("Résumés:"),
-                                      "Permet d'explorer les données à l'aide de tables de contingence."
+                                     # "Permet d'explorer les données à l'aide de tables de contingence."
+                                    "L'onglet de résumé statistique fournit un aperçu des variables qualitatives et quantitatives et ainsi que les cinq classes. Pour les variables qualitatives, il présente des analyses d'effectifs, d'effectifs cumulés, et de pourcentage. Pour les variables quantitatives, il affiche des paramètres statistiques basiques. Il permet également de sélectionner une autre variable pour une analyse approfondie en réalisant des croisements de données."
                               ),
                               tags$li(h4("Tableau de bord:"),
                                       "Cet onglet comporte un tableau de bord sur les différents sites de MNU. Il permet notamment d'explorer plus en profondeur les données à l'aide de graphiques simples et interactifs."
