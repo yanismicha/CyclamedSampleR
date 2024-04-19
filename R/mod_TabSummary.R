@@ -17,8 +17,8 @@ mod_TabSummary_ui <- function(id){
   valeurs1 <- c(names(Tonnage[,-6]))
   cles1 <- c("Région", "Maison Mère", "Site", "Tonnage DIM", "Nombre Rotation")
 
-  valeurs2 <- c(names(Tonnage[,c(-4,-5)]))
-  cles2 <- c("Région", "Maison Mère", "Site", "Compacteur")
+  # valeurs2 <- c(names(Tonnage[,c(-4,-5)]))
+  # cles2 <- c("Région", "Maison Mère", "Site")
 
   ns <- NS(id)
 
@@ -38,8 +38,8 @@ mod_TabSummary_ui <- function(id){
 
                        radioButtons(ns("bool1"), "Souhaitez vous regarder une partie de la population?", choices = c('Oui', 'Non'),selected = 'Non'),
                        shinyjs::hidden( # s'affiche uniquement lorsque l'on souhaite regarder une partie de la pop
-                         # selectInput(ns("var_quali"), "Variable à discriminer:", choices = names(Tonnage[,c(-4,-5)])),
-                         selectInput(ns("var_quali"), "Variable à discriminer:", choices = setNames(valeurs1, cles1)),
+                          #selectInput(ns("var_quali"), "Variable à discriminer:", choices = names(Tonnage[,c(-4,-5)])),
+                         selectInput(ns("var_quali"), "Variable à discriminer:", choices = c(setNames(valeurs1, cles1),'Compacteur')),
 
                          ## choix de la modalité à regarder ##
                          selectInput(ns("cat1"), "Quel partie de la population souhaitez vous regarder?", choices = NULL)
@@ -62,6 +62,9 @@ mod_TabSummary_ui <- function(id){
   )
 }
 
+#' TabSummary Server Functions
+#'
+#' @noRd
 #' TabSummary Server Functions
 #'
 #' @noRd
@@ -121,26 +124,28 @@ mod_TabSummary_server <- function(id, r){
             nbrcont <- sum(data_filtre[6] == 0)
             Ston <- summary(ton)
             Srot <- summary(rot)
-            TR <- data.frame( Tonnage = as.vector(Ston), Rotatation = as.vector(Srot))
+            TR <- data.frame( Tonnage = as.vector(Ston), Rotation = as.vector(Srot))
             CP <- data.frame(Avec_Compacteur = nbrcomp, Sans_Compacteur = nbrcont)
-            tp <- list(Données = as.data.frame(data_filtre), Analyse = TR, Compacteur = CP)
+            #tp <- list(Données = as.data.frame(data_filtre), Analyse = TR, Compacteur = CP)
+            tp <- list("La première ligne ne doit pas être prise en compte", Données = as.data.frame(data_filtre), Analyse = as.data.frame(TR), Compacteur = CP)
+
             tp
           }
 
 
         }else{
           # Traitements pour les classes sans condition
-          info_classe <- r$data[r$data$Site %in% r$classe[[paste0("classe",i)]],]
+          info_classe <- as.data.frame(r$data[r$data$Site %in% r$classe[[paste0("classe",i)]],])
           ton <- info_classe[4]
           rot <- info_classe[5]
           nbrcomp <- sum(info_classe[6])
           nbrcont <- sum(info_classe[6] == 0)
           Ston <- summary(ton)
           Srot <- summary(rot)
-          TR <- data.frame( Tonnage = as.vector(Ston), Rotatation = as.vector(Srot))
+          TR <- data.frame( Tonnage = as.vector(Ston), Rotation = as.vector(Srot))
           CP <- data.frame(Avec_Compacteur = nbrcomp, Sans_Compacteur = nbrcont)
-          tp <- list(Données = as.data.frame(info_classe), Analyse = as.data.frame(TR), Compacteur = as.data.frame(CP))
-
+         # tp <- list(Données = as.data.frame(info_classe), Analyse = as.data.frame(TR), Compacteur = as.data.frame(CP))
+          tp <- list("La première colonne ne doit pas être prise en compte", Données = as.data.frame(info_classe), Analyse = as.data.frame(TR), Compacteur = as.data.frame(CP))
           tp
 
 
