@@ -121,18 +121,18 @@ return(list_opt)
 
 -   Bouton "tirage aléatoire"\
     Ce boutton permet de réaliser un tirage des sites pour chaque classe à l'aide de la fonction `stratopt` décrite précedemment. Une fois cliqué, une fenêtre s'ouvre pour valider le tirage ou non afin d'éviter une erreur de tirage.\
-    Si le tirage s'avère ne pas être le premier, les site de nouveau tirés aléatoirement seront ceux dont le boutton "garder le site" de la classe correspondante à été décoché.\
+    Si le tirage s'avère ne pas être le premier, les site de nouveau tirés aléatoirement seront ceux dont le boutton/interrupteur de la classe correspondante aura été décoché (cadenas ouvert).\
 -   Bouton "Enregistrer"\
     Ce boutton permet de valider un tirage complet des cinq sites pour une année donnée.\
-    Une fois cliqué, une fenêtre s'ouvre pour confirmer la validation. Une ligne est alors ajouté dans l'historique avec la possibilité d'y ajouter un commentaire.  
-    Il s'affiche uniquement lorsque les cinq classes ont leur boutton "garder le site" activé.  
--   Boutton "Afficher l'historique"\
+    Une fois cliqué, une fenêtre s'ouvre pour confirmer la validation. Une ligne est alors ajouté dans l'historique avec la possibilité d'y ajouter un commentaire.\
+    Il s'affiche uniquement lorsque les cinq classes ont leur boutton "garder le site" activé.\
+-   Boutton "Historique"\
     Permet d'afficher l'historique des précédents tirages.
 
 **Utilisation des cadres**:\
-Sur la droite de l'onglet sont présents cinq cadres présentant respectivement les cinqs classes du plan d'échantillonnage stratifié.\  
+Sur la droite de l'onglet sont présents cinq cadres présentant respectivement les cinqs classes du plan d'échantillonnage stratifié.
 
-\includegraphics[width=1\textwidth]{cadre.png}  
+\includegraphics[width=1\textwidth]{cadre.png}
 
 On y retrouve:
 
@@ -141,20 +141,67 @@ On y retrouve:
     Il vous suffit de placer la souris sur ce boutton pour afficher des informations sur la classe.\
 -   un menu déroulant permettant de visualiser l'ensemble des sites présents dans la classe et de les séléctionner. Il est également possible de faire un recherche d'un site en particulier au sein d'une classe.\
     Afin de distinguer certaines spécificités importantes à prendre en compte lors du tirage, un code couleur à été crée:
-    - \textcolor{lightblue}{Bleu clair}: correspond à un site présent sur un territoire outre-mer.
-    - \textcolor{darkblue}{Bleu foncé}: correspond à un site classique présent sur le territoire métropolitain.
-    - \textcolor{steelred}{Rouge foncé}: correspond à un site avec la présence d'un compacteur.  
-Ce code couleur est utilisé non seulement à l'intérieur du menu déroulant mais également lors de l'affichage du site tiré.  
-- un boutton switch "garder le site".  
-Ce boutton s'active automatiquement lorsqu'un tirage est réalisé. En le décochant, il permet de réaliser un nouveau tirage d'un site pour une classe donnée.  Si l'on souhaite réaliser un nouveau tirage de l'ensemble des classes, il suffit de décocher le boutton de chaque classe.  
-Au centre de chaque cadre est affiché le site tiré aléatoirement de la classe avec le code couleur correspondant (nécessite au moins un premier tirage pour permettre de le visualiser).  
+    -   \textcolor{lightblue}{Bleu clair}: correspond à un site présent sur un territoire outre-mer.
+    -   \textcolor{darkblue}{Bleu foncé}: correspond à un site classique présent sur le territoire métropolitain.
+    -   \textcolor{steelred}{Rouge foncé}: correspond à un site avec la présence d'un compacteur.\
+        Ce code couleur est utilisé non seulement à l'intérieur du menu déroulant mais également lors de l'affichage du site tiré.\
+-   un boutton interrupteur.\
+    Ce boutton s'active automatiquement lorsqu'un tirage est réalisé. En le décochant, il permet de réaliser un nouveau tirage d'un site pour une classe donnée. Si l'on souhaite réaliser un nouveau tirage de l'ensemble des classes, il suffit de décocher le boutton de chaque classe.\
+    Au centre de chaque cadre est affiché le site tiré aléatoirement de la classe avec le code couleur correspondant (nécessite au moins un premier tirage pour permettre de le visualiser).
+
+**Utilisation de l'historique**:\
+Une ligne de l'historique représente un tirage et est composé de la date (au format jour/mois/annee heure),des cinq sites tirés,de l'état du tirage,d'un commentaire,et de l'année pour laquelle le tirage a été effectué.\
+Parmi ces neuf colonnes, seul les trois dernières sont modifiables directement depuis l'interface.
+
+-   Etat:
+
+    -   \textcolor{green}{Valide}: indique qu'il s'agit du tirage définitif pour la caractérisation de l'année indiquée.
+
+    -   \textcolor{yellow}{En attente de validation}: indique que le tirage n'est pas définitif et qu'il peut changer selon la situation (pas certain de pouvoir se rendre sur un site,de pouvoir place rune benne à côté d'un site avec compacteur,etc.).
+
+    -   \textcolor{steelred}{Non valide}: indique que ce tirage ne sera pas utilisé pour la caractérisation.\
+        Cet etat peut-être modifié directement, à savoir que "valide","validé","valider" sont autorisés pour \textcolor{green}{Valide},"en attente" avec n'importe quoi après suffit pour \textcolor{yellow}{En attente de validation} et que tout autre écrit sera transformé automatiquement en \textcolor{steelred}{Non valide}.\
+        A savoir que l'écriture de l'état n'est pas sensible à la casse (majuscule ,minuscule).
+
+-   Commentaire:
+
+    Tout type de commentaire sont acceptés, aucune restriction quant à la modification,suppression d'un commentaire.
+
+-   Caractérisation: représente l'année de caractérisation pour laquelle va être utilisée le tirage. Par défaut,l'année de caractéristation enregistré sera la même que le précédent tirage. Il est possible de la modifier mais l'année doit obligatoirement être écrite en chiffre et ne pas précéder 2024 (année de création de l'interface).
 
 ## Statistiques
 
 ### Résumés
 
-Cet onglet permet d'explorer les données à l'aide de tables de contingence.
+L'onglet de résumé statistique fournit un aperçu des variables qualitatives telles que la région, la maison mère et le site, ainsi que des variables quantitatives comme le tonnage DIM (Déchêts issus de médicaments), le nombre de rotations et la présence d’un compacteur, à partir du fichier de données "tonnage".  Il permet également de discriminer les informations des sites par classes correspondantes au plan d'échantillonnage stratifié .  Pour les variables qualitatives, il présente des analyses d’effectifs, d’effectifs cumulées et de pourcentage. Pour les variables quantitatives, il affiche des paramètres statistiques tels que le minimum, le premier quartile, la médiane, la moyenne, le troisième quartile et le maximum. De plus, il offre la possibilité de sélectionner une variable spécifique pour une analyse plus détaillée, y compris la présence d’un compacteur. 
+
+
+Nous allons expliquer le fonctionnement de l'onglet. Sur le côté gauche, vous avez la possibilité de choisir une variable mentionnée précédemment dans un menu déroulant. Ensuite, il vous suffit de cliquer sur le bouton "Lancer" pour afficher le résultat. Celui-ci s'affiche ensuite à droite, dans le panneau principal.  
+
+\includegraphics[width=1\textwidth]{onglet_summary.png}
+
+Il est également possible de croiser la variable principale avec une autre variable qualitative. Pour ce faire, cochez simplement la case "Oui", et deux menus déroulants apparaîtront. Vous devrez ensuite sélectionner la variable avec laquelle vous souhaitez croiser, ainsi que la partie spécifique de la population à considérer. Ensuite, cliquez sur le bouton "Lancer" pour obtenir le résultat affiché dans le panneau principal.  
+
+\includegraphics[width=1\textwidth]{onglet_summary2.png}  
+
 
 ### Tableau de bord
 
-Cet onglet comporte un tableau de bord sur les différents sites de MNU. Il permet notamment d'explorer plus en profondeur les données à l'aide de graphiques simples et interactifs.
+Ce tableau de bord permet d'explorer de manière approfondie les données des différents sites de MNU à travers une série de visualisations graphiques interactives. L'interface inclut quatre principaux types de graphiques :
+
+### Types de Graphiques
+
+1. **Graphique en secteurs** : Utilisé pour visualiser la proportion de la présence de compacteurs. Un clic sur un secteur permet de filtrer les autres graphiques selon la catégorie sélectionnée.
+2. **Graphique de dispersion** : Affiche le nombre de rotations par rapport au tonnage, avec des données qui peuvent être filtrées en fonction des sélections effectuées sur d'autres graphiques.
+3. **Graphique à boîtes à moustaches** : Présente la distribution du tonnage par classe, adaptable selon les filtres appliqués sur les autres visualisations.
+4. **Graphique en barres** : Comprend une liste déroulante pour choisir parmi différentes visualisations, telles que tonnage par classe, région ou maison mère.
+
+### Interactions et Fonctionnalités Additionnelles
+
+- **Interactivité entre graphiques** : Les clics sur les éléments des graphiques région ou maison mère déclenchent des pop-ups fournissant des informations détaillées sur les sites de la région ou maison mère sélectionnée et filtrent simultanément les graphiques de dispersion et à boîtes à moustaches.
+- **Filtre par compacteur** : Le graphique en secteurs permet de filtrer les autres visualisations en fonction de la présence ou non de compacteurs.
+- **Réinitialisation** : Un bouton ‘Réinitialiser la sélection’ est disponible pour effacer tous les filtres appliqués et revenir à l'affichage initial.
+- **Bibliothèque graphique fonctionnalité** : Plotly, la bibliothèque utilisée pour les graphiques, offre des fonctionnalités telles que le zoom (en traçant un rectangle ou via les boutons de zoom, tandis qu'un double-clic réinitialise le zoom à l'état d'origine) et la manipulation de l'affichage des légendes (un clic simple sur une légende cache la série correspondante).
+
+Tous les graphiques sont interactifs. Des informations supplémentaires sont aussi disponibles en survolant les éléments des graphiques.
+
