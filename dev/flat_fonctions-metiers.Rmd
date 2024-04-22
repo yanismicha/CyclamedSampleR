@@ -281,6 +281,8 @@ Cette fonction permet d'afficher le graphique en boîte du tonnage en fonction d
 #' @param selected_maison Une maison mère une valeur null
 #' @param selectedCompacteur booleen = "Avec Compacteur"/autre ou une valeur null
 #' @import dplyr
+#' @importFrom grDevices colorRampPalette
+#' @importFrom stats quantile
 #' @return Un graphique en boite du tonnage en fonction des classe
 #' @export
 #'
@@ -601,4 +603,3 @@ test_that("BarCy returns a plotly object", {
 # Execute in the console directly
 fusen::inflate(flat_file = "dev/flat_fonctions-metiers.Rmd", vignette_name = "Go further",check = FALSE)
 ```
-
