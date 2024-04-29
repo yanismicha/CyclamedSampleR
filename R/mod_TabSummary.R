@@ -17,8 +17,8 @@ mod_TabSummary_ui <- function(id){
   valeurs1 <- c(names(Tonnage[,-6]))
   cles1 <- c("Région", "Maison Mère", "Site", "Tonnage DIM", "Nombre Rotation")
 
-  # valeurs2 <- c(names(Tonnage[,c(-4,-5)]))
-  # cles2 <- c("Région", "Maison Mère", "Site")
+  valeurs2 <- c(names(Tonnage[,c(-4,-5)]))
+  cles2 <- c("Région", "Maison Mère", "Site", "Compacteur")
 
   ns <- NS(id)
 
@@ -38,8 +38,8 @@ mod_TabSummary_ui <- function(id){
 
                        radioButtons(ns("bool1"), "Souhaitez vous regarder une partie de la population?", choices = c('Oui', 'Non'),selected = 'Non'),
                        shinyjs::hidden( # s'affiche uniquement lorsque l'on souhaite regarder une partie de la pop
-                          #selectInput(ns("var_quali"), "Variable à discriminer:", choices = names(Tonnage[,c(-4,-5)])),
-                         selectInput(ns("var_quali"), "Variable à discriminer:", choices = c(setNames(valeurs1, cles1),'Compacteur')),
+                         # selectInput(ns("var_quali"), "Variable à discriminer:", choices = names(Tonnage[,c(-4,-5)])),
+                         selectInput(ns("var_quali"), "Variable à discriminer:", choices = setNames(valeurs1, cles1)),
 
                          ## choix de la modalité à regarder ##
                          selectInput(ns("cat1"), "Quel partie de la population souhaitez vous regarder?", choices = NULL)
@@ -51,13 +51,15 @@ mod_TabSummary_ui <- function(id){
 
           mainPanel(
             HTML("<div style='text-align: center; margin-top: 20px;'> <h1 style='font-weight: bold;'>Résumé Statistiques</h1> </div>"),
+
+
+
+            div(id = ns("Info"),   HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 16px; --fa-animation-duration: 4s"></i>  Il ne faut pas prendre en compte la première colonne.')),
             div(
               class = "custom-box",
               verbatimTextOutput(ns("summary"))
             )
           )
-
-
 
   )
 }
@@ -65,13 +67,21 @@ mod_TabSummary_ui <- function(id){
 #' TabSummary Server Functions
 #'
 #' @noRd
-#' TabSummary Server Functions
-#'
-#' @noRd
 mod_TabSummary_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
     observe({
+
+
+      # Afiiche/Masque l'information pour classe
+      if(input$var1 == "Classe"){
+        shinyjs::show("Info")
+      }else{
+        shinyjs::hide("Info")
+      }
+
+
       ## mise à jour du choix des modalités ##
       if (!is.null(input$var_quali)) {
         levels <- levels(as.factor(r$data[,input$var_quali]))
@@ -124,28 +134,26 @@ mod_TabSummary_server <- function(id, r){
             nbrcont <- sum(data_filtre[6] == 0)
             Ston <- summary(ton)
             Srot <- summary(rot)
-            TR <- data.frame( Tonnage = as.vector(Ston), Rotation = as.vector(Srot))
+            TR <- data.frame( Tonnage = as.vector(Ston), Rotatation = as.vector(Srot))
             CP <- data.frame(Avec_Compacteur = nbrcomp, Sans_Compacteur = nbrcont)
-            #tp <- list(Données = as.data.frame(data_filtre), Analyse = TR, Compacteur = CP)
-            tp <- list("La première ligne ne doit pas être prise en compte", Données = as.data.frame(data_filtre), Analyse = as.data.frame(TR), Compacteur = CP)
-
+            tp <- list(Données = as.data.frame(data_filtre), Analyse = TR, Compacteur = CP)
             tp
           }
 
 
         }else{
           # Traitements pour les classes sans condition
-          info_classe <- as.data.frame(r$data[r$data$Site %in% r$classe[[paste0("classe",i)]],])
+          info_classe <- r$data[r$data$Site %in% r$classe[[paste0("classe",i)]],]
           ton <- info_classe[4]
           rot <- info_classe[5]
           nbrcomp <- sum(info_classe[6])
           nbrcont <- sum(info_classe[6] == 0)
           Ston <- summary(ton)
           Srot <- summary(rot)
-          TR <- data.frame( Tonnage = as.vector(Ston), Rotation = as.vector(Srot))
+          TR <- data.frame( Tonnage = as.vector(Ston), Rotatation = as.vector(Srot))
           CP <- data.frame(Avec_Compacteur = nbrcomp, Sans_Compacteur = nbrcont)
-         # tp <- list(Données = as.data.frame(info_classe), Analyse = as.data.frame(TR), Compacteur = as.data.frame(CP))
-          tp <- list("La première colonne ne doit pas être prise en compte", Données = as.data.frame(info_classe), Analyse = as.data.frame(TR), Compacteur = as.data.frame(CP))
+          tp <- list(Données = as.data.frame(info_classe), Analyse = as.data.frame(TR), Compacteur = as.data.frame(CP))
+
           tp
 
 
@@ -162,7 +170,7 @@ mod_TabSummary_server <- function(id, r){
             data_filtre <- r$data[r$data[,input$var_quali] == input$cat1, ]
           }
           n_observations <- length(data_filtre[,v1])
-          frequency <- n_observations / length(x1) #/73000 normalement
+          frequency <- n_observations / length(x1)
           pop <- round(frequency * 100, 2)
           # Création du résumé personnalisé
           custom_summary <- summary(data_filtre[,v1])
@@ -172,7 +180,7 @@ mod_TabSummary_server <- function(id, r){
           summary(r$data[,input$var1])
         }
       } else { # cas d'une variable qualitative
-        if(input$bool1 == "Oui"){## on regarde une sous partie
+        if(input$bool1 == "Oui"){ ## on regarde une sous partie
           if(input$var_quali == "Compacteur") {
             data_filtre <- r$data[r$data[,input$var_quali] == ifelse(input$cat1 == "Avec compacteur", "1", "0"), ]
           } else {
@@ -183,7 +191,7 @@ mod_TabSummary_server <- function(id, r){
           effectifsCumulés <- cumsum(effectifs)
           frequence <- round(effectifs/length(subx1) * 100, 2)
           frequence_cumulés <- cumsum(frequence)
-          table_data <- data.frame(Effectif = as.vector(effectifs), EffectifsCumulés = effectifsCumulés, Pourcentage = as.vector(frequence))#, "Frequence Cumulees" = frequence_cumulés)
+          table_data <- data.frame(Effectif = as.vector(effectifs), EffectifsCumulés = effectifsCumulés, Pourcentage = as.vector(frequence))
           table_data
         } else {
           if(input$var_quali == "Compacteur") {
@@ -193,7 +201,7 @@ mod_TabSummary_server <- function(id, r){
           effectifsCumulés <- cumsum(effectifs)
           frequence <- round(effectifs/length(x1) * 100, 2)
           frequence_cumulés <- cumsum(frequence)
-          table_data <- data.frame(Effectif = as.vector(effectifs), EffectifsCumulés = effectifsCumulés, Pourcentage = as.vector(frequence))#, "Frequence Cumulees" = frequence_cumulés)
+          table_data <- data.frame(Effectif = as.vector(effectifs), EffectifsCumulés = effectifsCumulés, Pourcentage = as.vector(frequence))
           table_data
         }
       }
