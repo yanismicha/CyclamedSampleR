@@ -53,8 +53,8 @@ mod_TabSummary_ui <- function(id){
             HTML("<div style='text-align: center; margin-top: 20px;'> <h1 style='font-weight: bold;'>Résumé Statistiques</h1> </div>"),
 
 
-            div(id = ns("Info"), "Il ne faut pas prendre en compte la première colonne."),
 
+            div(id = ns("Info"),   HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 16px; --fa-animation-duration: 4s"></i>  Il ne faut pas prendre en compte la première colonne.')),
             div(
               class = "custom-box",
               verbatimTextOutput(ns("summary"))
