@@ -10,12 +10,12 @@
 #' @import shinydashboard
 mod_dbHeader_ui <- function(id){
   ns <- NS(id)
-  dashboardHeader(title = "Cyclamed",
+  dashboardHeader(title = HTML("CyclamedSampleR <i class='fa-solid fa-capsules'></i>"),
                   tags$li(a(href = 'https://www.cyclamed.org/',
-                            img(src = "www/logo.gif", height = 30, width = 30,
+                            img(src = "www/logo-cyclamed-big.png",width = 70,
                               title = ""),
                             style = "padding-top:10px; padding-bottom:10px;"),
-                            class = "dropdown")
+                            class = "dropdown logo-dropdown")
                   )
 }
 

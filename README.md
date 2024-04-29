@@ -3,11 +3,12 @@
 
 # CyclamedSampleR
 
-<!-- badges: start -->
-
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-<!-- badges: end -->
+
+[![Logo
+UGA](inst/app/www/logo-uga.png)](https://www.univ-grenoble-alpes.fr/)
+[![Logo](inst/app/www/logo.gif)](https://www.cyclamed.org/)
 
 L’objectif de cette interface est de permettre à **Cyclamed**
 d’optimiser leur étude annuelle d’échantillonnage.
@@ -40,11 +41,11 @@ CyclamedSampleR::run_app()
 
 L’interface se décompose en trois principaux onglets:
 
-- onglet `data`
-- onglet `random`
-- onglet `analyse statistique`
+- onglet `Jeux de données`
+- onglet `séléction de sites`
+- onglet `statistiques`
 
-### onglet data
+### onglet Jeux de données
 
 cette onglet permet principalement de pouvoir visualiser le jeu de
 donnée avec le package `reactable` permettant également de faire des
@@ -52,7 +53,7 @@ recherches spécifiques par variables et de trier de manière très
 simpliste. Un bouton est également présent permettant d’ajouter
 directement un site au jeu de donnée.
 
-### onglet random
+### onglet séléction de sites
 
 cet onglet permet de tirer les cinq sites dans le cadre de l’étude
 d’échantillonnage. Quelques fonctionnalités sont disponibles en plus du

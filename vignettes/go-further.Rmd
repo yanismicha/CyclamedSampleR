@@ -31,9 +31,113 @@ data("Tonnage")
 stratopt(Tonnage)$classe1
 ```
 
-```{r examples-function_isOutreMer}
+# isOutreMer
+
+Cette fonction permet de connaitre les sites situés en territoires outre mers
+
+```{r examples-isOutreMer}
 isOutreMer(Tonnage)
 classes <- stratopt(Tonnage)
 isOutreMer(Tonnage,classes,1)
+```
+
+# scatterCy
+
+Cette fonction permet d'afficher le graphique de tonnage en fonction des rotations
+
+```{r examples-scatterCy}
+scatterCy(Tonnage,NULL,NULL,"Sans Compacteur")
+```
+
+# piecy
+
+Cette fonction permet d'afficher le graphique en secteur de proportion des compacteur
+
+```{r examples-pieCy}
+require(dplyr)
+proportions_compacteurs <- 
+      Tonnage %>%
+        mutate(Compacteur = ifelse(Compacteur == 1, "Avec Compacteur", "Sans Compacteur")) %>%
+        group_by(Compacteur) %>%
+        summarise(Count = dplyr::n()) %>%
+        mutate(Proportion = Count / sum(Count))
+
+pieCy(proportions_compacteurs)
+```
+
+# BoxCy
+
+Cette fonction permet d'afficher le graphique en boîte du tonnage en fonction des classes
+
+# summarise_data
+
+Cette fonction permet de creer un  data frame tibble selon une variable group by
+
+```{r examples-summarise_data}
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+summarise_data(r$data,Region,r)
+```
+
+# BarCy
+
+Cette fonction permet de Créer et afficher des graphiques basés sur le type de vue sélectionné.
+
+```{r examples-BarCy}
+require(dplyr)
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+data_copy <- Tonnage
+data_copy$classe <- NA
+data_copy$classe <- sapply(data_copy$Site, function(site) {
+  for(i in 1:5){
+    if (site %in% r$classe[[paste0("classe",i)]])
+    return(i)
+  }
+  data_copy
+})
+
+totalTonnageParClasse <- summarise_data(data_copy,classe,r)
+
+totalTonnageParRegion <- summarise_data(data_copy,Region,r)
+
+totalTonnageParMaison <- summarise_data(data_copy,Maison.Mere,r)
+
+
+data_copy$IsOutreMer <- CyclamedSampleR::isOutreMer(data_copy)
+sites_outre_mer <- summarise_data(data_copy %>% filter(IsOutreMer), classe, r)
+
+proportions <- 
+data_copy %>%
+  group_by(classe) %>%
+  summarise(Count = dplyr::n(),
+            ProportionCompacteur = mean(Compacteur),
+            MinTonnage = min(Tonnages.DIM, na.rm = TRUE),
+            MaxTonnage = max(Tonnages.DIM, na.rm = TRUE)) %>%
+  mutate(
+    class_name = dplyr::case_when(
+      classe == 1 ~ paste("\u2264", r$classe$bornes1, " tonnes"),
+      classe == 2 ~ paste("[", r$classe$bornes1, ";", r$classe$bornes2, ") tonnes"),
+      classe == 3 ~ paste("[", r$classe$bornes2, ";", r$classe$bornes3, ") tonnes"),
+      classe == 4 ~ paste("[", r$classe$bornes3, ";", r$classe$bornes4, ") tonnes"),
+      classe == 5 ~ paste("\u2265", r$classe$bornes4, " tonnes")
+    )
+  )
+
+colorsM <- c("red", "green", "blue")
+colorsR <- c("orange", "purple", "cyan")
+
+BarCy(viewType = "Tonnage par classe",
+      colorsM = colorsM,
+      colorsR = colorsR,
+      proportions = proportions,
+      totalTonnageParClasse = totalTonnageParClasse,
+      totalTonnageParRegion = totalTonnageParRegion,
+      totalTonnageParMaison = totalTonnageParMaison,
+      sitesOutreMer = sites_outre_mer)
 ```
 

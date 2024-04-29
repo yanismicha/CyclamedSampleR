@@ -8,7 +8,6 @@
 #'
 #' @noRd
 app_ui <- function(request) {
-  data(Tonnage)
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
@@ -39,7 +38,7 @@ golem_add_external_resources <- function() {
   )
 
   tags$head(
-    favicon(),
+    favicon(ext = "png"),
     bundle_resources(
       path = app_sys("app/www"),
       app_title = "CyclamedSampleR"

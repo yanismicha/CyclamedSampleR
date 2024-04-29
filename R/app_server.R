@@ -8,7 +8,7 @@
 #' @noRd
 app_server <- function(input, output, session) {
   ## Initialisation des sites et de la data ##
-  r <- reactiveValues(data = Tonnage, site1 = "",site2 = "",site3 = "",site4 = "",site5 = "")
+  r <- reactiveValues(data = Tonnage, site1 = "",site2 = "",site3 = "",site4 = "",site5 = "",hist=historique)
   observe({
 
 
@@ -17,8 +17,16 @@ app_server <- function(input, output, session) {
 
 
 
+
   }) ## fin du observe
 
+  # Ajout du mode sombre ( initialisé dans tabAccueil)
+  session$sendCustomMessage(
+    type = "darkmode_enable", list(message = "const darkmode =  new Darkmode(); darkmode.showWidget();")
+  )
+
+  #######################PARTIE Sidebar #######################
+  mod_dbSidebar_server("dbSidebar_1")
   #######################PARTIE Accueil #######################
   mod_TabAccueil_server("TabAccueil_1")
 
@@ -30,6 +38,11 @@ app_server <- function(input, output, session) {
    #################################Résumés statistiques###########################
 
    mod_TabSummary_server("TabSummary_1",r)
+
+
+  #################################TABLEAU DE BORD###########################
+
+   mod_TabVisu_server("TabVisu_1",r)
 
   #################################PARTIE RANDOM###########################
 

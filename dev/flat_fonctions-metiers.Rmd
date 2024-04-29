@@ -8,7 +8,10 @@ editor_options:
 ```{r development, include=FALSE}
 library(testthat)
 library(shiny)
-
+library(plotly)
+library(stratification)
+library(magrittr)
+library(dplyr)
 ```
 
 # Fonctions métiers de mon app
@@ -49,30 +52,9 @@ list_opt<-list(classe1=data_opt$Site[data_opt$class_opt==1],
                classe4=data_opt$Site[data_opt$class_opt==4],
                classe5=data_opt$Site[data_opt$class_opt==5])
 
-return(list_opt)
+return(c(list_opt,bornes=cum$bh))
 }
-stratopt<-function(data){
 
-  cum<-strata.cumrootf(x=data$Tonnages.DIM,n=5,Ls=5,alloc=c(0.5,0,0.5),nclass = 200)
-
-  class_opt<-numeric(dim(data)[1])
-
-  class_opt<-as.numeric(data$Tonnages.DIM<=cum$bh[1])+
-    2*as.numeric(data$Tonnages.DIM>cum$bh[1]&data$Tonnages.DIM<=cum$bh[2])+
-    3*as.numeric(data$Tonnages.DIM>cum$bh[2]&data$Tonnages.DIM<=cum$bh[3])+
-    4*as.numeric(data$Tonnages.DIM>cum$bh[3]&data$Tonnages.DIM<=cum$bh[4])+
-    5*as.numeric(data$Tonnages.DIM>cum$bh[4])
-
-  data_opt<-data.frame(data,class_opt)
-
-  list_opt<-list(classe1=data_opt$Site[data_opt$class_opt==1],
-                 classe2=data_opt$Site[data_opt$class_opt==2],
-                 classe3=data_opt$Site[data_opt$class_opt==3],
-                 classe4=data_opt$Site[data_opt$class_opt==4],
-                 classe5=data_opt$Site[data_opt$class_opt==5])
-
-  return(list_opt)
-}
 
 ```
 
@@ -83,7 +65,8 @@ stratopt(Tonnage)$classe1
 
 
 
-
+# isOutreMer
+Cette fonction permet de connaitre les sites situés en territoires outre mers
 ```{r function-isOutreMer}
 #' isOutreMer
 #' permet de connaitre les sites situés en territoires outre mers
@@ -107,7 +90,7 @@ isOutreMer <- function(data,classes=NULL,nb=1){
 }
 ```
 
-```{r examples-function_isOutreMer}
+```{r examples-isOutreMer}
 isOutreMer(Tonnage)
 classes <- stratopt(Tonnage)
 isOutreMer(Tonnage,classes,1)
@@ -120,10 +103,503 @@ test_that("isOutreMer works", {
 ```
 
 
+# scatterCy
+Cette fonction permet d'afficher le graphique de tonnage en fonction des rotations
+```{r function-scatterCy}
+#' scatterCy
+#' permet d'afficher le graphique de tonnage en fonction des rotations
+#'
+#' @param data un dataframe 
+#' @param selected_maison Une maison mère une valeur null
+#' @param selected_region Région ou une valeur null
+#' @param selectedCompacteur booleen = "Avec Compacteur"/autre ou une valeur null
+#' @import dplyr
+#' @return Un graphique scatter plot en fonction des région/maison mère est la présence d'un compacteur
+#' @export
+#'
+scatterCy <- function(data,selected_maison,selected_region,selectedCompacteur){
+  #ligne des moyennes 
+  moyenne_DIM <- mean(data$Tonnages.DIM, na.rm = TRUE)
+  moyenne_DIM_pas_compacteur <- mean(data$Tonnages.DIM[data$Compacteur == 0], na.rm = TRUE)
+  moyenne_DIM_compacteur <- mean(data$Tonnages.DIM[data$Compacteur == 1], na.rm = TRUE)
+
+  data_avec_compacteur <- data %>%
+    filter(Compacteur == 1)
+
+  data_sans_compacteur <- data %>%
+    filter(Compacteur == 0)
+  
+  #application filtre région /compacteur/maison
+  if (!is.null(selected_region)) {
+    data_filteredA <- data_avec_compacteur %>% filter(Region == selected_region)
+    data_filteredS <- data_sans_compacteur %>% filter(Region == selected_region)
+  }
+  else if (!is.null(selected_maison)) {
+    data_filteredA <- data_avec_compacteur %>% filter(Maison.Mere == selected_maison)
+    data_filteredS <- data_sans_compacteur %>% filter(Maison.Mere == selected_maison)
+  }
+  else {
+    data_filteredA <- data_avec_compacteur
+    data_filteredS <- data_sans_compacteur
+  }
+  if(!is.null(selectedCompacteur)){
+    data_filteredA <- data_filteredA %>% filter(Compacteur == ifelse(selectedCompacteur == "Avec Compacteur", 1, 0))
+    data_filteredS <- data_filteredS %>% filter(Compacteur == ifelse(selectedCompacteur == "Avec Compacteur", 1, 0))
+  }
+  #points avec compacteur
+  p_scatter <- plot_ly() %>%
+    add_trace(data = data_filteredA, x = ~Nbre.de.rotation, y = ~Tonnages.DIM,
+              type = "scatter", mode = "markers",
+              text = ~paste("Site:", data_filteredA$Site, "<br>Tonnages DIM:", data_filteredA$Tonnages.DIM,"<br>Compacteur: Avec"),
+              hoverinfo = "text",
+              marker = list(size = 4, color = 'red', symbol = 'circle'),
+              name = "Avec Compacteur") %>%
+    
+      #points sans compacteur
+    add_trace(data = data_filteredS, x = ~Nbre.de.rotation, y = ~Tonnages.DIM,
+              text = ~paste("Site:", data_filteredS$Site, "<br>Tonnages DIM:", data_filteredS$Tonnages.DIM,"<br>Compacteur: Sans"),
+              hoverinfo = "text",
+              marker = list(size = 4, color = 'blue', symbol = 'circle'),
+              name = "Sans Compacteur")
+  #ligne (0,max(rotation)) besoin de 2 valeurs donc on donne deux fois la même pour obtenir une seul ligne
+  p_scatter <- add_trace(p_scatter, x = c(0, max(data$Nbre.de.rotation, na.rm = TRUE)), y = rep(moyenne_DIM, 2),visible = 'legendonly',
+                         type = "scatter", mode = "lines",
+                         line = list(dash = 'dot', color = 'black', width = 2),
+                         name = "Moyenne DIM",
+                         hoverinfo = "none") %>%
+    add_trace(x = c(0, max(data$Nbre.de.rotation, na.rm = TRUE)), y = rep(moyenne_DIM_compacteur, 2),visible = 'legendonly',
+              type = "scatter", mode = "lines",
+              line = list(dash = 'dot', color = 'red', width = 2),
+              name = "Moyenne avec Compacteur",
+              hoverinfo = "none") %>%
+    add_trace(x = c(0, max(data$Nbre.de.rotation, na.rm = TRUE)), y = rep(moyenne_DIM_pas_compacteur, 2),visible = 'legendonly',
+              type = "scatter", mode = "lines",
+              line = list(dash = 'dot', color = 'blue', width = 2),
+              name = "Moyenne sans Compacteur",
+              hoverinfo = "none")
+
+  title_text <- "Tonnages DIM en fonction du nombre de rotations"
+  
+#titre du graphique en fonction des filtres
+  if (!is.null(selected_region)) {
+    title_text <- paste(title_text, "\nDétails pour la région:", selected_region)
+  } else if (!is.null(selected_maison)) {
+    title_text <- paste(title_text, "\nDétails pour la maison mère:", selected_maison)
+  }
+   p_scatter <- layout(p_scatter,paper_bgcolor = '#ecf0f5',plot_bgcolor = '#ecf0f5',
+                      title = title_text,
+                      xaxis = list(title = "Nombres de rotation",range = c(0, max(data$Nbre.de.rotation)+10)),
+                      yaxis = list(title = "Tonnage",range = c(0, max(data$Tonnages.DIM)+10)),
+                      legend= list(
+                        x = 1,            
+                        xanchor = "left",
+                        font = list(size = 8)
+                      ),
+                      margin = list(l = 50, r = 50, b = 70, t = 80))
+
+  p_scatter
+}
+```
+
+```{r examples-scatterCy}
+scatterCy(Tonnage,NULL,NULL,"Sans Compacteur")
+```
+
+```{r tests-scatterCy}
+test_that("scatterCy returns a plotly object", {
+  result <- scatterCy(Tonnage,NULL,NULL,"Sans Compacteur")
+  # Vérifier que le résultat est un objet plotly
+  expect_true("plotly" == class(result)[1])
+})
+```
+
+
+
+# piecy
+Cette fonction permet d'afficher le graphique en secteur de proportion des compacteur
+```{r function-pieCy}
+#' pieCy
+#' permet d'afficher le graphique en secteur de proportion des compacteur
+#'
+#' @param proportions_compacteurs un dataframe 
+#' @import magrittr
+#' @return Un graphique pie plot en fonction de la proportion de compacteur
+#' @export
+#'
+
+pieCy <- function(proportions_compacteurs){
+  plot_ly(proportions_compacteurs, labels = ~Compacteur, values = ~Count, type = 'pie', source = "pieChart",key = ~Compacteur, #Récupere les labels pour le filtre.
+          hoverinfo = "text",
+          text = ~Compacteur,
+          hovertext = ~paste("<b> Compacteur :",Compacteur,"<br>",
+                             "Nombre :",Count,"<br>",
+                             "Pourcentage: ", round(Proportion,3)*100,"%"),
+          textposition = 'inside',
+          insidetextorientation = 'radial',
+          marker = list(colors = c('Avec Compacteur' = 'red', 'Sans Compacteur' = 'blue'))
+  ) %>%
+    layout(title = 'Proportion de Compacteurs',paper_bgcolor = '#ecf0f5',
+           margin = list(l = 0, r = 0, b = 5, t = 50),showlegend = FALSE )
+}
+```
+
+```{r examples-pieCy}
+require(dplyr)
+proportions_compacteurs <- 
+      Tonnage %>%
+        mutate(Compacteur = ifelse(Compacteur == 1, "Avec Compacteur", "Sans Compacteur")) %>%
+        group_by(Compacteur) %>%
+        summarise(Count = dplyr::n()) %>%
+        mutate(Proportion = Count / sum(Count))
+
+pieCy(proportions_compacteurs)
+```
+
+```{r tests-pieCy}
+proportions_compacteurs <- 
+      Tonnage %>%
+        mutate(Compacteur = ifelse(Compacteur == 1, "Avec Compacteur", "Sans Compacteur")) %>%
+        group_by(Compacteur) %>%
+        summarise(Count = dplyr::n()) %>%
+        mutate(Proportion = Count / sum(Count))
+test_that("pieCy returns a plotly object", {
+  result <- pieCy(proportions_compacteurs)
+  # Vérifier que le résultat est un objet plotly
+  expect_true("plotly" == class(result)[1])
+})
+```
+
+
+# BoxCy
+Cette fonction permet d'afficher le graphique en boîte du tonnage en fonction des classes
+```{r function-BoxCy}
+#' BoxCy
+#' permet d'afficher le graphique en boîte du tonnage en fonction des classes
+#'
+#' @param data un dataframe 
+#' @param selected_region Région ou une valeur null
+#' @param selected_maison Une maison mère une valeur null
+#' @param selectedCompacteur booleen = "Avec Compacteur"/autre ou une valeur null
+#' @import dplyr
+#' @importFrom grDevices colorRampPalette
+#' @importFrom stats quantile
+#' @return Un graphique en boite du tonnage en fonction des classe
+#' @export
+#'
+BoxCy <- function(data,selected_region,selected_maison,selectedCompacteur){
+  palette_verte <- c("#00e000", "#00c100", "#00a200","#008300","#006400")
+  
+  #application filtre région /compacteur/maison
+  if (!is.null(selected_region)) {
+    data_filtered <- data %>% filter(Region == selected_region)
+  }
+  else if (!is.null(selected_maison)) {
+    data_filtered <- data %>% filter(Maison.Mere == selected_maison)
+  }
+  else {
+    data_filtered <- data
+  }
+  if(!is.null(selectedCompacteur)){
+    data_filtered <- data_filtered %>% filter(Compacteur == ifelse(selectedCompacteur == "Avec Compacteur", 1, 0))
+  }
+  #Outliers pour la derniere classe
+  last_class <- max(data_filtered$classe)
+  data_last_class <- filter(data_filtered, classe == last_class)
+  Q1 <- quantile(data_last_class$Tonnages.DIM, 0.25)
+  Q3 <- quantile(data_last_class$Tonnages.DIM, 0.75)
+  IQR <- Q3 - Q1
+  upper_fence <- Q3 + 1.5 * IQR
+  data_last_class$outlier <- ifelse(data_last_class$Tonnages.DIM > upper_fence, TRUE, FALSE)
+
+  p <- plot_ly(data = data_filtered, y = ~Tonnages.DIM, x = ~factor(classe), type = "box",
+               color = ~factor(classe), colors =  palette_verte)
+
+  p <- add_trace(p, data = data_last_class[data_last_class$outlier == TRUE, ], y = ~Tonnages.DIM,
+                 x = ~factor(classe), type = 'scatter', mode = 'markers',
+                 marker = list(color = 'red', size = 5), hoverinfo = 'text',
+                 text = ~paste("Site:", Site, "<br>Tonnage:", Tonnages.DIM)
+  )
+  
+  #titre du graphique en fonction des filtres
+  title_text <- "Boxplot du tonnage des classes"
+  if (!is.null(selected_region)) {
+    title_text <- paste(title_text, "\nDétails pour la région:", selected_region)
+  } else if (!is.null(selected_maison)) {
+    title_text <- paste(title_text, "\nDétails pour la maison mère:", selected_maison)
+  }
+  
+  p <- layout(p,margin = list(l = 50, r = 0, b = 5, t = 50), title = title_text ,paper_bgcolor = '#ecf0f5',plot_bgcolor = '#ecf0f5',
+              yaxis = list(title = "Tonnage",categoryorder = "total ascending",showline = TRUE,showgrid = FALSE,range = c(0, max(data$Tonnages.DIM)+10)), xaxis = list(title = "Classe",categoryorder = "array", categoryarray = c("1", "2", "3", "4", "5"))
+  )
+  p
+}
+```
+
+
+
+
+```{r tests-BoxCy}
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+data_copy <- Tonnage
+data_copy$classe <- NA
+data_copy$classe <- sapply(data_copy$Site, function(site) {
+  for(i in 1:5){
+    if (site %in% r$classe[[paste0("classe",i)]])
+    return(i)
+  }
+  data_copy
+})
+test_that("BoxCy returns a plotly object", {
+  result <- BoxCy(data_copy,NULL,NULL,"Sans Compacteur")
+  # Vérifier que le résultat est un objet plotly
+  expect_true("plotly" == class(result)[1])
+})
+```
+
+
+# summarise_data
+Cette fonction permet de creer un  data frame tibble selon une variable group by
+```{r function-summarise_data}
+#' summarise_data
+#' permet de creer un  data frame tibble selon une variable group by
+#'
+#' @param data un dataframe 
+#' @param group_var variable utilisé pour le group by
+#' @param dataBorne dataframe contenant les bornes 
+#' @import dplyr
+#' @return Un data frame tibble.
+#' @export
+#'
+  
+summarise_data <- function(data, group_var, dataBorne) {
+  # Regroupement et résumé des données
+  summarised_data <- data %>%
+    group_by({{ group_var }}) %>%
+    summarise(
+      TotalTonnage = sum(Tonnages.DIM, na.rm = TRUE),
+      NombreSites = dplyr::n(),
+    ) %>%
+    mutate(
+      Proportion = TotalTonnage / sum(TotalTonnage)
+    )
+
+  if (dplyr::quo_name(dplyr::enquo(group_var)) == "classe") {
+    summarised_data <- summarised_data %>%
+      mutate(
+        class_name = dplyr::case_when(
+          classe == 1 ~ paste("\u2264", dataBorne$classe$bornes1, " tonnes"),
+          classe == 2 ~ paste("[", dataBorne$classe$bornes1, ";", dataBorne$classe$bornes2, ") tonnes"),
+          classe == 3 ~ paste("[", dataBorne$classe$bornes2, ";", dataBorne$classe$bornes3, ") tonnes"),
+          classe == 4 ~ paste("[", dataBorne$classe$bornes3, ";", dataBorne$classe$bornes4, ") tonnes"),
+          classe == 5 ~ paste("\u2265", dataBorne$classe$bornes4, " tonnes")
+        )
+      )
+  }
+
+  return(summarised_data)
+}
+```
+
+
+```{r examples-summarise_data}
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+summarise_data(r$data,Region,r)
+```
+
+
+```{r tests-summarise_data}
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+test_that("summarise_data correctly summarises and assigns class_name", {
+# Utiliser la fonction sur les données de test
+summarised <- summarise_data(r$data, Region, r)
+
+# Vérifier que les colonnes attendues sont présentes
+expect_true(all(c("TotalTonnage", "NombreSites", "Proportion") %in% names(summarised)))
+
+
+})
+```
+
+
+# BarCy
+Cette fonction permet de Créer et afficher des graphiques basés sur le type de vue sélectionné.
+```{r function-BarCy}
+#' BarCy
+#' Créer et affiche des graphiques basés sur le type de vue sélectionné.
+#'
+#' @param viewType Le type de vue à générer, tel que "Proportion de Compacteurs par Classe".
+#' @param colorsM Les couleurs à utiliser pour le graphique des Maisons Mères.
+#' @param colorsR Les couleurs à utiliser pour le graphique des Régions.
+#' @param proportions Les données sur la proportion de compacteurs par classe.
+#' @param totalTonnageParClasse Les données sur le tonnage total par classe.
+#' @param totalTonnageParRegion Les données sur le tonnage total par région.
+#' @param totalTonnageParMaison Les données sur le tonnage total par maison mère.
+#' @param sitesOutreMer Les données sur le nombre de sites en Outre-Mer par classe.
+#' @import dplyr
+#' @return Un graphique Plotly généré selon le type de vue sélectionné.
+#' @export
+#'
+
+BarCy <- function(viewType, colorsM, colorsR, proportions, totalTonnageParClasse, totalTonnageParRegion, totalTonnageParMaison, sitesOutreMer) {
+  switch(viewType,
+         "Proportion de Compacteurs par Classe" = {
+           plot_ly(data = proportions, x = ~classe, y = ~ProportionCompacteur, type = 'bar', name = 'ProportionCompacteur',
+                   hovertext = ~paste('Intervalle de tonnage:', class_name, '<br>',
+                                      'Nombre de Sites:', Count,
+                                      '<br>Proportion de compacteur :', round(ProportionCompacteur, 3) * 100, "%"),
+                   hoverinfo = 'text') %>%
+             layout(margin = list(l = 50, r = 0, b = 5, t = 50), paper_bgcolor = '#ecf0f5', plot_bgcolor = '#ecf0f5', title = "Proportion de Compacteurs par Classe", xaxis = list(title = "Classe", categoryorder = "total ascending"), yaxis = list(title = "Proportion compacteur", showline = TRUE, showgrid = FALSE))
+         },
+         "Tonnage par classe" = {
+           plot_ly(data = totalTonnageParClasse, x = ~classe, y = ~TotalTonnage, type = 'bar', name = 'Tonnage par classe',
+                   hovertext = ~paste('Intervalle de tonnage:', class_name, '<br>',
+                                      'Tonnage Total:', TotalTonnage, 'tonnes<br>',
+                                      'Nombre de Sites:', NombreSites,
+                                      '<br>Proportion du tonnage total :', round(Proportion, 3) * 100, "%"),
+                   hoverinfo = 'text') %>%
+             layout(margin = list(r = 0, b = 5, t = 50), paper_bgcolor = '#ecf0f5', plot_bgcolor = '#ecf0f5', title = "Tonnage par classe", xaxis = list(title = "Classe", categoryorder = "total ascending"),
+                    yaxis = list(title = "Tonnages DIM tonnes", showgrid = FALSE, showline = TRUE))
+         },
+         "Tonnage par Régions" = {
+           plot_ly(data = totalTonnageParRegion, x = ~TotalTonnage, y = ~Region, type = 'bar', orientation = 'h', name = 'Tonnage par Région',
+                   marker = list(color = colorsR),
+                   hovertext = ~paste('Région :', Region, '<br>',
+                                      'Tonnage total :', TotalTonnage, '<br>',
+                                      'Nombre de Sites:', NombreSites,
+                                      '<br>Proportion du tonnage total:', round(Proportion, 3) * 100, "%"),
+                   hoverinfo = 'text', source = "regionSelect") %>%
+             layout(margin = list(r = 0, b = 5, t = 50), paper_bgcolor = '#ecf0f5', plot_bgcolor = '#ecf0f5', title = "Tonnage par Région", xaxis = list(title = "Tonnages DIM"),
+                    yaxis = list(title = "Région", tickfont = list(size = 7), showgrid = FALSE, categoryorder = "total ascending"))
+         },
+         "Tonnage par Maison Mère" = {
+           plot_ly(data = totalTonnageParMaison, x = ~TotalTonnage, y = ~Maison.Mere, type = 'bar', orientation = 'h',
+                   marker = list(color = colorsM),
+                   hovertext = ~paste('Maison mère :', Maison.Mere, '<br>',
+                                      'Tonnage total :', TotalTonnage, '<br>',
+                                      'Nombre de Sites:', NombreSites,
+                                      '<br>Proportion de tonnage total :', round(Proportion, 3) * 100, "%"),
+                   hoverinfo = 'text', source = "maisonSelect") %>%
+             layout(margin = list(l = 100, r = 0, b = 5, t = 50), paper_bgcolor = '#ecf0f5', plot_bgcolor = '#ecf0f5',
+                    title = "Tonnage par Maison Mère", xaxis = list(title = "Tonnages DIM"),
+                    yaxis = list(title = "Maison Mère", tickfont = list(size = 7), showline = TRUE, showgrid = FALSE, categoryorder = "total ascending"))
+         },
+         "Nombre de Sites en Outre-Mer par Classe" = {
+           plot_ly(data = sitesOutreMer, x = ~classe, y = ~NombreSites, type = 'bar', name = 'Nombre de Sites en Outre-Mer',
+                   hovertext = ~paste('Intervalle de tonnage:', class_name, '<br>',
+                                      'Total tonnage :', TotalTonnage, 'tonnes<br>',
+                                      'Nombre de Sites:', NombreSites,
+                                      '<br>Proportion de site:', round(Proportion, 3) * 100, "%"),
+                   hoverinfo = 'text') %>%
+             layout(margin = list(l = 50, r = 0, b = 5, t = 50), paper_bgcolor = '#ecf0f5', plot_bgcolor = '#ecf0f5', title = "Nombre de Sites en Outre-Mer par Classe", xaxis = list(title = "classe"),
+                    yaxis = list(title = "site", showgrid = FALSE, showline = TRUE))
+         }
+  )
+}
+
+```
+
+```{r examples-BarCy}
+require(dplyr)
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+data_copy <- Tonnage
+data_copy$classe <- NA
+data_copy$classe <- sapply(data_copy$Site, function(site) {
+  for(i in 1:5){
+    if (site %in% r$classe[[paste0("classe",i)]])
+    return(i)
+  }
+  data_copy
+})
+
+totalTonnageParClasse <- summarise_data(data_copy,classe,r)
+
+totalTonnageParRegion <- summarise_data(data_copy,Region,r)
+
+totalTonnageParMaison <- summarise_data(data_copy,Maison.Mere,r)
+
+
+data_copy$IsOutreMer <- CyclamedSampleR::isOutreMer(data_copy)
+sites_outre_mer <- summarise_data(data_copy %>% filter(IsOutreMer), classe, r)
+
+proportions <- 
+data_copy %>%
+  group_by(classe) %>%
+  summarise(Count = dplyr::n(),
+            ProportionCompacteur = mean(Compacteur),
+            MinTonnage = min(Tonnages.DIM, na.rm = TRUE),
+            MaxTonnage = max(Tonnages.DIM, na.rm = TRUE)) %>%
+  mutate(
+    class_name = dplyr::case_when(
+      classe == 1 ~ paste("\u2264", r$classe$bornes1, " tonnes"),
+      classe == 2 ~ paste("[", r$classe$bornes1, ";", r$classe$bornes2, ") tonnes"),
+      classe == 3 ~ paste("[", r$classe$bornes2, ";", r$classe$bornes3, ") tonnes"),
+      classe == 4 ~ paste("[", r$classe$bornes3, ";", r$classe$bornes4, ") tonnes"),
+      classe == 5 ~ paste("\u2265", r$classe$bornes4, " tonnes")
+    )
+  )
+
+colorsM <- c("red", "green", "blue")
+colorsR <- c("orange", "purple", "cyan")
+
+BarCy(viewType = "Tonnage par classe",
+      colorsM = colorsM,
+      colorsR = colorsR,
+      proportions = proportions,
+      totalTonnageParClasse = totalTonnageParClasse,
+      totalTonnageParRegion = totalTonnageParRegion,
+      totalTonnageParMaison = totalTonnageParMaison,
+      sitesOutreMer = sites_outre_mer)
+```
+
+```{r tests-BarCy}
+r <- NULL
+r$data <- Tonnage
+r$classe <- stratopt(r$data)
+
+data_copy <- Tonnage
+data_copy$classe <- NA
+data_copy$classe <- sapply(data_copy$Site, function(site) {
+  for(i in 1:5){
+    if (site %in% r$classe[[paste0("classe",i)]])
+    return(i)
+  }
+  data_copy
+})
+
+totalTonnageParClasse <- summarise_data(data_copy,classe,r)
+
+colorsM <- c("red", "green", "blue")
+colorsR <- c("orange", "purple", "cyan")
+
+totalTonnageParClasse <- summarise_data(data_copy,classe,r)
+test_that("BarCy returns a plotly object", {
+  result <- BarCy(viewType = "Tonnage par classe",
+      colorsM = colorsM,
+      colorsR = colorsR,
+      proportions = NULL,
+      totalTonnageParClasse = totalTonnageParClasse,
+      totalTonnageParRegion = NULL,
+      totalTonnageParMaison = NULL,
+      sitesOutreMer = NULL)
+  # Vérifier que le résultat est un objet plotly
+  expect_true("plotly" == class(result)[1])
+})
+```
 
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/flat_fonctions-metiers.Rmd", vignette_name = "Go further")
+fusen::inflate(flat_file = "dev/flat_fonctions-metiers.Rmd", vignette_name = "Go further",check = FALSE)
 ```
-

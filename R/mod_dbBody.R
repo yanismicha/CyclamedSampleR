@@ -15,7 +15,7 @@
 
 mod_dbBody_ui <- function(id){
   ns <- NS(id)
-  dashboardBody(mod_dbBodyStyle_ui("dbBodyStyle_1"), #style du corps de l'interface
+  dashboardBody(
       tabItems( # les différents onglets
         mod_TabAccueil_ui("TabAccueil_1"),
         mod_TabData_ui("TabData_1"),
