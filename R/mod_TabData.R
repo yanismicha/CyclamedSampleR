@@ -12,57 +12,57 @@ mod_TabData_ui <- function(id) {
   ns <- NS(id)
   tabItem(tabName = "data",
 
-            # Première rangée de l'interface utilisateur avec une marge en haut pour l'espacement.
-            fluidRow(
-              column(width = 1,
-                     div(style = "margin-top: 15rem;",
-                         # Dropdown pour ajouter de nouvelles données avec différents champs de saisie.
-                         dropdown(inputId = ns("modifyDataButton"),
-                                  animate = TRUE, style = "pill", color = "success",
-                                  tags$h4("Veuillez remplir chaque champ avant de rajouter une nouvelle ligne :"),
-                                  selectInput(ns("c1"), "Région:", choices = levels(as.factor(Tonnage$Region))),
-                                  selectizeInput(ns("c2"), "Maison mère:", choices = levels(as.factor(Tonnage$Maison.Mere)), options = list(create = TRUE, placeholder = 'Choisissez ou ajoutez')),
-                                  textInput(ns("c3"), "Site:", placeholder = "Entrez le nom du site"),
-                                  numericInput(ns("c4"), "Tonnages DIM", value = 0, min = 0),
-                                  numericInput(ns("c5"), "Nombre de rotations:", value = 0, min = 0),
-                                  selectInput(ns("c6"), "Type de stockage:", choices = c("Conteneur/Benne", "Compacteur")),
-                                  actionBttn(inputId = ns("newRow"), label = "Nouvelle ligne", style = "unite", size = "sm", color = "success"),
-                                  circle = TRUE, status = "success",
-                                  icon = icon("plus"),
-                                  tooltip = tooltipOptions(title = "Cliquer pour ajouter un nouveau site")
-                         )
-                     )
-              ),
-              column(
-                width = 7,
-                shinyjs::useShinyjs(),
-                # Titre principal du tableau.
-                h1("Tableaux des sites de grossistes répartiteurs"),
-                div(style= "margin-bottom :17px",
-                    shinyjs::hidden (
-                            actionButton(ns("edit_btn"), "Éditer", icon = icon("edit"), class = "btn-success")
-                    ),
-
-                   shinyjs::hidden (
-                     actionButton(ns("deleteBtn"), "Supprimer", icon = icon("trash"), class = "btn-danger")
-                  )
-                ),
-
-                # Sortie du tableau de données interactif.
-                DTOutput(ns('table_data'), width = "100%")
-              )
+          # Première rangée de l'interface utilisateur avec une marge en haut pour l'espacement.
+          fluidRow(
+            column(width = 1,
+                   div(style = "margin-top: 15rem;",
+                       # Dropdown pour ajouter de nouvelles données avec différents champs de saisie.
+                       dropdown(inputId = ns("modifyDataButton"),
+                                animate = TRUE, style = "pill", color = "success",
+                                tags$h4("Veuillez remplir chaque champ avant de rajouter une nouvelle ligne :"),
+                                selectInput(ns("c1"), "Région:", choices = levels(as.factor(Tonnage$Region))),
+                                selectizeInput(ns("c2"), "Maison mère:", choices = levels(as.factor(Tonnage$Maison.Mere)), options = list(create = TRUE, placeholder = 'Choisissez ou ajoutez')),
+                                textInput(ns("c3"), "Site:", placeholder = "Entrez le nom du site"),
+                                numericInput(ns("c4"), "Tonnages DIM", value = 0, min = 0),
+                                numericInput(ns("c5"), "Nombre de rotations:", value = 0, min = 0),
+                                selectInput(ns("c6"), "Type de stockage:", choices = c("Conteneur/Benne", "Compacteur")),
+                                actionBttn(inputId = ns("newRow"), label = "Nouvelle ligne", style = "unite", size = "sm", color = "success"),
+                                circle = TRUE, status = "success",
+                                icon = icon("plus"),
+                                tooltip = tooltipOptions(title = "Cliquer pour ajouter un nouveau site")
+                       )
+                   )
             ),
-            # Deuxième rangée de l'interface utilisateur pour l'import de fichiers et la sauvegarde des données.
-            fluidRow(
-              column(
-                width = 6,
-                fileInput(ns("fileInput"), "Nouvelles données", accept = ".csv", buttonLabel = "Parcourir...", placeholder = "Aucun fichier sélectionné")
+            column(
+              width = 7,
+              shinyjs::useShinyjs(),
+              # Titre principal du tableau.
+              h1("Tableaux des sites de grossistes répartiteurs"),
+              div(style= "margin-bottom :17px",
+                  shinyjs::hidden (
+                    actionButton(ns("edit_btn"), "Éditer", icon = icon("edit"), class = "btn-success")
+                  ),
+
+                  shinyjs::hidden (
+                    actionButton(ns("deleteBtn"), "Supprimer", icon = icon("trash"), class = "btn-danger")
+                  )
               ),
-              column(width = 4,
-                     div(style = "text-align: right;",
-                         downloadBttn(outputId = ns("save_data"), label = "Sauvegarder", color = "success", size = "md", style = "gradient")
-                     )
-              )
+
+              # Sortie du tableau de données interactif.
+              DTOutput(ns('table_data'), width = "100%")
+            )
+          ),
+          # Deuxième rangée de l'interface utilisateur pour l'import de fichiers et la sauvegarde des données.
+          fluidRow(
+            column(
+              width = 6,
+              fileInput(ns("fileInput"), "Nouvelles données", accept = ".csv", buttonLabel = "Parcourir...", placeholder = "Aucun fichier sélectionné")
+            ),
+            column(width = 4,
+                   div(style = "text-align: right;",
+                       downloadBttn(outputId = ns("save_data"), label = "Sauvegarder", color = "success", size = "md", style = "gradient")
+                   )
+            )
 
           )
   )
@@ -120,7 +120,8 @@ mod_TabData_server <- function(id,r){
           language = list(
             info = "Site _START_ à _END_ sur un total de _TOTAL_ Sites",
             lengthMenu = "Afficher _MENU_ sites",
-            search= "Recherche : "
+            search= "Recherche : ",
+            paginate = list(previous = 'Précédent', `next` = 'Suivant')
           ),
           pageLength = 10,
           lengthMenu = c(10, 50, nrow(r$data)),
@@ -387,4 +388,3 @@ mod_TabData_server <- function(id,r){
 
   })
 }
-
