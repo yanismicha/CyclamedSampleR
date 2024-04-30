@@ -11,36 +11,6 @@ mod_TabData_ui <- function(id) {
   # définition de l'interface utilisateur pour afficher et interagir avec les données dans un tableau.
   ns <- NS(id)
   tabItem(tabName = "data",
-          fluidPage(
-            tags$head(
-              tags$style(HTML("
-
-                .dataTable {
-                  border-collapse: collapse;
-                }
-                table.dataTable thead th, table.dataTable tbody td {
-                  border: 1px solid #ddd;
-                }
-                table.dataTable thead th {
-                  background-color: #f9f9f9;
-                }
-
-                table.dataTable tr.shiny-input-container {
-                  border: 2px solid #ccc;
-                  box-shadow: 0 2px 3px #ccc;
-                }
-
-                .btn {
-                  margin-right: 10px;
-                }
-
-                .shiny-notification {
-                  background-color: #cccccc !important;
-                  color: black;
-                  border-left-color: #999999 !important;
-                }
-              "))
-            ),
 
             # Première rangée de l'interface utilisateur avec une marge en haut pour l'espacement.
             fluidRow(
@@ -65,10 +35,19 @@ mod_TabData_ui <- function(id) {
               ),
               column(
                 width = 7,
+                shinyjs::useShinyjs(),
                 # Titre principal du tableau.
                 h1("Tableaux des sites de grossistes répartiteurs"),
-                # Sortie UI pour les boutons dynamiques (éditer, supprimer,).
-                uiOutput(ns('dynamic_buttons')),
+                div(style= "margin-bottom :17px",
+                    shinyjs::hidden (
+                            actionButton(ns("edit_btn"), "Éditer", icon = icon("edit"), class = "btn-success")
+                    ),
+
+                   shinyjs::hidden (
+                     actionButton(ns("deleteBtn"), "Supprimer", icon = icon("trash"), class = "btn-danger")
+                  )
+                ),
+
                 # Sortie du tableau de données interactif.
                 DTOutput(ns('table_data'), width = "100%")
               )
@@ -84,7 +63,7 @@ mod_TabData_ui <- function(id) {
                          downloadBttn(outputId = ns("save_data"), label = "Sauvegarder", color = "success", size = "md", style = "gradient")
                      )
               )
-            )
+
           )
   )
 }
@@ -96,8 +75,41 @@ mod_TabData_ui <- function(id) {
 mod_TabData_server <- function(id,r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+
+    observe({
+      # permet d'afficher ou de cacher les boutons editer et supprimer selon les séléctions.
+      selected_rows <- input$table_data_rows_selected
+
+
+      if (length(selected_rows) > 1) {
+
+        shinyjs:: show("deleteBtn", anim=TRUE )
+
+        shinyjs:: hide("edit_btn", anim=TRUE )
+
+      }
+
+      else if (length(selected_rows) == 1){
+        shinyjs:: show("deleteBtn", anim=TRUE )
+
+        shinyjs:: show("edit_btn", anim=TRUE )
+      }
+
+      else {
+        shinyjs:: hide("deleteBtn", anim=TRUE )
+
+        shinyjs:: hide("edit_btn", anim=TRUE )
+      }
+
+
+    })
+
+
+
+
+
     # Génère dynamiquement le tableau de données pour l'interface utilisateur.
-    # 'r$data' est un objet reactiveValues qui contient les données à afficher.
     output$table_data <- DT::renderDataTable({
       DT::datatable(
         data = r$data,
@@ -107,10 +119,11 @@ mod_TabData_server <- function(id,r){
           autoWidth = FALSE,
           language = list(
             info = "Site _START_ à _END_ sur un total de _TOTAL_ Sites",
-            lengthMenu = "Afficher _MENU_ sites"
+            lengthMenu = "Afficher _MENU_ sites",
+            search= "Recherche : "
           ),
           pageLength = 10,
-          lengthMenu = c(10, 50, 100),
+          lengthMenu = c(10, 50, nrow(r$data)),
           searchHighlight = TRUE,
           columnDefs = list(
             list(
@@ -139,24 +152,6 @@ mod_TabData_server <- function(id,r){
         )
     })
 
-    # boutons dynamic en fonction des lignes sélectionnées.
-    output$dynamic_buttons <- renderUI({
-      selected_rows <- input$table_data_rows_selected
-
-      button_list <- tagList()
-
-      # Ajoute un bouton 'Supprimer' si au moins une ligne est sélectionnée.
-      if (length(selected_rows) >= 1) {
-        button_list <- tagAppendChild(button_list, actionButton(ns("deleteBtn"), "Supprimer", icon = icon("trash"), class = "btn-danger"))
-      }
-
-      # Ajoute un bouton 'Éditer' si exactement une ligne est sélectionnée.
-      if (length(selected_rows) == 1) {
-        button_list <- tagAppendChild(button_list, actionButton(ns("edit_btn"), "Éditer", icon = icon("edit"), class = "btn-success"))
-      }
-
-      return(button_list)
-    })
 
 
     # observeEvent lorsque l'utilisateur télécharge un fichier via input$fileInput.
@@ -211,7 +206,7 @@ mod_TabData_server <- function(id,r){
 
         # En cas d'erreur lors de la lecture du fichier, affichage d'une notification à l'utilisateur.
       }, error = function(e) {
-        showNotification("Une erreur est survenue en lisant le fichier: ", e$message, type = "error", duration = 6)
+        showNotification("Une erreur est survenue en lisant le fichier: ", e$message, type = "error", duration = 10)
       }, warning = function(w) {
         showNotification("Message d'attention: ", w$message, type = "warning")
       })
@@ -386,7 +381,7 @@ mod_TabData_server <- function(id,r){
         paste("Tonnage", Sys.Date(), ".csv", sep = '')
       },
       content = function(file) {
-        write.csv(r$data(), file, row.names = FALSE)
+        write.csv(r$data, file, row.names = FALSE)
       }
     )
 
