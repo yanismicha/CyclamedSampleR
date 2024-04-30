@@ -117,7 +117,7 @@ mod_TabData_server <- function(id,r){
               targets = c(5),
               render = JS(
                 "function(data, type, row) {",
-                "  return data == 0 ? '\u274c NON' : '\u2714\ufe0f OUI';",
+                "  return data == 0 ? '\u274c' : '\u2714\ufe0f';",
                 "}"
               )
             ),
