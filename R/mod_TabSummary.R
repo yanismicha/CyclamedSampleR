@@ -25,7 +25,7 @@ mod_TabSummary_ui <- function(id){
   tabItem(tabName = "resume",
           sidebarPanel("Informations requises",shinyjs::useShinyjs(),
                        ## selection d'une variable ##
-                       #selectInput(ns("var1"), " Choisissez une variable", choices = c(names(Tonnage[,-6]),'Classe')),
+
 
                        selectInput(ns("var1"), " Choisissez une variable", choices = c(setNames(valeurs1, cles1),'Classe')),
 
@@ -38,7 +38,6 @@ mod_TabSummary_ui <- function(id){
 
                        radioButtons(ns("bool1"), "Souhaitez vous regarder une partie de la population?", choices = c('Oui', 'Non'),selected = 'Non'),
                        shinyjs::hidden( # s'affiche uniquement lorsque l'on souhaite regarder une partie de la pop
-                         # selectInput(ns("var_quali"), "Variable à discriminer:", choices = names(Tonnage[,c(-4,-5)])),
                          selectInput(ns("var_quali"), "Variable à discriminer:", choices = setNames(valeurs1, cles1)),
 
                          ## choix de la modalité à regarder ##
@@ -48,12 +47,12 @@ mod_TabSummary_ui <- function(id){
                        actionBttn(inputId = ns("run"),label = "Lancer", style = "unite",size = "xs",color = "royal")
           ),
 
-
+          #Panel principal
           mainPanel(
             HTML("<div style='text-align: center; margin-top: 20px;'> <h1 style='font-weight: bold;'>Résumé Statistiques</h1> </div>"),
 
 
-
+            # affichage d'information pour la variable classe
             div(id = ns("Info"),   HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 16px; --fa-animation-duration: 4s"></i>  Il ne faut pas prendre en compte la première colonne.')),
             div(
               class = "custom-box",
@@ -206,7 +205,7 @@ mod_TabSummary_server <- function(id, r){
         }
       }
       }
-    }, ignoreNULL = FALSE) # ignoreNULL=false, permet d'afficher sans cliquer sur run
+    }, ignoreNULL = FALSE)
 
     output$summary <- renderPrint({
       resume()
