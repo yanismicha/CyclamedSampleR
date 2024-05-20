@@ -10,8 +10,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 UGA](inst/app/www/logo-uga.png)](https://www.univ-grenoble-alpes.fr/)
 [![Logo](inst/app/www/logo.gif)](https://www.cyclamed.org/)
 
-L’objectif de cette interface est de permettre à **Cyclamed**
-d’optimiser leur étude annuelle d’échantillonnage.
+L’objectif de cette application R Shiny est de permettre à **Cyclamed**
+d’optimiser leur étude annuelle de caractérisation.
 
 ## Installation
 
@@ -41,21 +41,21 @@ CyclamedSampleR::run_app()
 
 L’interface se décompose en trois principaux onglets:
 
-- onglet `Jeux de données`
-- onglet `séléction de sites`
-- onglet `statistiques`
+- onglet `Les données`
+- onglet `Séléction de sites`
+- onglet `Statistiques`
 
-### onglet Jeux de données
+### onglet Les données
 
-cette onglet permet principalement de pouvoir visualiser le jeu de
-donnée avec le package `reactable` permettant également de faire des
-recherches spécifiques par variables et de trier de manière très
-simpliste. Un bouton est également présent permettant d’ajouter
-directement un site au jeu de donnée.
+Cet onglet permet principalement de pouvoir visualiser le jeu de donnée
+avec le package `DT` permettant également de faire des recherches
+spécifiques par variables et de trier de manière très simpliste. Des
+boutons sont également présents permettant d’ajouter/modifier/supprimer
+directement un (ou plusieurs) site(s) au jeu de données.
 
-### onglet séléction de sites
+### onglet Séléction de sites
 
-cet onglet permet de tirer les cinq sites dans le cadre de l’étude
+Cet onglet permet de tirer les cinq sites dans le cadre de l’étude
 d’échantillonnage. Quelques fonctionnalités sont disponibles en plus du
 tirage:
 
@@ -69,12 +69,18 @@ tirage:
 - Indications des sites avec ou sans compacteurs.
 - Indication des sites Outre-Mer.
 - Affichage d’informations sur les classes: intervalles de tonnage des
-  DIM
+  DIM.
+
+Un historique des tirages enregistrés est également présent.
 
 les différentes classes sont récupérés avec la fonction `stratopt`:
 
 ``` r
 library(CyclamedSampleR)
+#> Warning: remplacement de l'importation précédente 'DT::dataTableOutput' par
+#> 'shiny::dataTableOutput' lors du chargement de 'CyclamedSampleR'
+#> Warning: remplacement de l'importation précédente 'DT::renderDataTable' par
+#> 'shiny::renderDataTable' lors du chargement de 'CyclamedSampleR'
 #> Warning: remplacement de l'importation précédente 'shinyWidgets::alert' par
 #> 'shinyjs::alert' lors du chargement de 'CyclamedSampleR'
 #> Warning: remplacement de l'importation précédente 'reactablefmtr::html' par
@@ -89,3 +95,8 @@ classes <- stratopt(Tonnage)
     #> [1] "Nombre de sites pour la classe  3 : 45"
     #> [1] "Nombre de sites pour la classe  4 : 31"
     #> [1] "Nombre de sites pour la classe  5 : 23"
+
+### onglets Statistiques
+
+Deux sous onglets sont présents permettant respectivement d’afficher des
+résumés statistiques et visualiser via un tableau de bord les données.

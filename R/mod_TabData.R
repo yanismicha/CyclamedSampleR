@@ -56,7 +56,7 @@ mod_TabData_ui <- function(id) {
           fluidRow(
             column(
               width = 6,
-              fileInput(ns("fileInput"), "Nouvelles données", accept = ".csv", buttonLabel = "Parcourir...", placeholder = "Aucun fichier sélectionné")
+              fileInput(ns("fileInput"), "Import de nouvelles données", accept = ".csv", buttonLabel = "Parcourir...", placeholder = "Aucun fichier sélectionné")
             ),
             column(width = 4,
                    div(style = "text-align: right;",
@@ -155,28 +155,24 @@ mod_TabData_server <- function(id,r){
 
 
 
-    # observeEvent lorsque l'utilisateur télécharge un fichier via input$fileInput.
     observeEvent(input$fileInput, {
-      # Assure qu'un fichier a bien été téléchargé avant de poursuivre.
       req(input$fileInput)
 
       tryCatch({
-
         newData <- read.csv(input$fileInput$datapath, stringsAsFactors = FALSE)
         lowerCaseNames <- tolower(names(newData))
 
-        # Définition d'une liste de mots-clés pour identifier des colonnes attendues.
+        # Définition des mots-clés pour identifier les colonnes attendues.
         keywords <- list(
           region = "region|regions",
           maison.mere = "maison|mere|maison.mere",
           site = "site|sites",
           tonnages.dim = "dim|tonnages|tonnes|tonnages.dim",
-          nbre.de.rotation = "rotation|rotations|nbre.de.rotation",
+          nbre.de.rotation = "rotation|rotations|nbre.de.rotation|nbre.de.rotations",
           compacteur = "compacteur|compacteurs|benne|bennes"
         )
 
-        # Vérification de la présence des mots-clés dans les noms de colonnes pour s'assurer que
-        # toutes les colonnes nécessaires sont présentes.
+        # Fonction pour vérifier la présence des mots-clés.
         match_columns <- function(data_names, keywords) {
           sapply(keywords, function(keyword) {
             any(grepl(keyword, data_names))
@@ -184,7 +180,6 @@ mod_TabData_server <- function(id,r){
         }
 
         matches <- match_columns(lowerCaseNames, keywords)
-        # Si toutes les colonnes requises ne sont pas présentes, informer l'utilisateur.
         if (!all(matches)) {
           missing_cols <- names(matches)[!matches]
           showNotification(
@@ -192,26 +187,49 @@ mod_TabData_server <- function(id,r){
             type = "error",
             duration = 10
           )
-          # Arret du traitement supplémentaire et conservation les données existantes.
           return()
         }
 
-        # Si toutes les colonnes requises sont présentes, mettre à jour les données dans l'application.
+        # Fonction pour identifier si une colonne correspond à une des expressions régulières
+        column_matches_any_keyword <- function(column_name, keywords) {
+          any(sapply(keywords, function(keyword) grepl(keyword, column_name)))
+        }
+
+        # Application de cette fonction à chaque nom de colonne et inversion du résultat pour trouver les non-correspondances
+        unmatched_columns <- lowerCaseNames[!sapply(lowerCaseNames, function(name) column_matches_any_keyword(name, keywords))]
+
+        if (length(unmatched_columns) > 0) {
+          showNotification(
+            paste("Le fichier importé contient des colonnes non attendues:", paste(unmatched_columns, collapse=", ")),
+            type = "warning",
+            duration = 10
+          )
+          return()
+        }
+
+        # Mise à jour des données
         names(newData) <- c("Region", "Maison.Mere", "Site", "Tonnages.DIM", "Nbre.de.rotation", "Compacteur")
         r$data <- newData
-        # Sauvegarder les nouvelles données dans un fichier CSV local pour une utilisation ultérieure.
         write.csv(r$data, "Tonnage.csv", row.names = FALSE)
-        # Mettre à jour les données dans l'environnement global pour qu'elles soient disponibles partout dans l'application.
         Tonnage <- r$data
         usethis::use_data(Tonnage, overwrite = TRUE)
 
-        # En cas d'erreur lors de la lecture du fichier, affichage d'une notification à l'utilisateur.
+        # Notification de succès
+
+        showNotification(
+          "Le fichier a été importé avec succès et les données ont été mises à jour.",
+          type = "message",
+          duration = 10,
+          closeButton = TRUE,
+        )
+
       }, error = function(e) {
         showNotification("Une erreur est survenue en lisant le fichier: ", e$message, type = "error", duration = 10)
       }, warning = function(w) {
         showNotification("Message d'attention: ", w$message, type = "warning")
       })
     })
+
 
     ########  bouton pour ajouter une nouvelle ligne de données.
     observeEvent(input$newRow, {
@@ -241,7 +259,7 @@ mod_TabData_server <- function(id,r){
         )
       } else {
         # Si certains champs ne sont pas remplis correctement, informe l'utilisateur.
-        showNotification("Veuillez remplir tous les champs correctement avant d'ajouter une nouvelle ligne.", type = "error", duration= 5)
+        showNotification("Veuillez remplir tous les champs correctement avant d'ajouter une nouvelle ligne.", type = "error", duration= 10)
       }
     })
 
@@ -291,7 +309,7 @@ mod_TabData_server <- function(id,r){
         )
       } else {
         # Si aucune ligne n'est sélectionnée, informe l'utilisateur via une notification d'erreur.
-        showNotification("Aucune ligne sélectionnée pour la suppression.", type = "error", duration = 4)
+        showNotification("Aucune ligne sélectionnée pour la suppression.", type = "error", duration = 10)
       }
     })
 
@@ -311,7 +329,7 @@ mod_TabData_server <- function(id,r){
           usethis::use_data(Tonnage, overwrite = TRUE)
 
           # Informe l'utilisateur de la réussite de la suppression via une notification.
-          showNotification("Les lignes ont été supprimées avec succès.", type = "error", duration = 4)
+          showNotification("Les lignes ont été supprimées avec succès.", type = "error", duration = 10)
         }
       }
     })

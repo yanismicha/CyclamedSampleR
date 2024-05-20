@@ -278,7 +278,7 @@ mod_TabRandom_server <- function(id,r){
       # Afficher le popup lorsque le bouton est cliqué
       showModal(modalDialog(
         title = "Historique des tirages",
-        HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 16px; --fa-animation-duration: 4s"></i>Double clique pour modifier &  <img src="www/ctrl.png" alt="Ctrl" style="width: 25px; height: 25px;"> + <img src="www/enter_key.png" alt="Entrée" style="width: 18px; height: 18px;"> pour enregistrer les modifications'),
+        HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 16px; --fa-animation-duration: 4s"></i>Double clic pour modifier &  <img src="www/ctrl.png" alt="Ctrl" style="width: 25px; height: 25px;"> + <img src="www/enter_key.png" alt="Entrée" style="width: 18px; height: 18px;"> pour enregistrer les modifications'),
         DTOutput(ns("history")),
         size = "l",
         easyClose = TRUE, footer = tagList(
