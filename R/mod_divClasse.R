@@ -59,7 +59,7 @@ mod_divClasse_ui <- function(id){
             width = 2,
             offset = ifelse(id == "cadre5",8,6),
               switchInput(
-                inputId = ns("Id1"),
+                inputId = ns("lock1"),
                 label = NULL,
                 onLabel = icon("lock"),
                 offLabel = icon("lock-open"),
@@ -89,10 +89,10 @@ mod_divClasse_server <- function(id,r){
 
 
       # on stock les valeurs des switchs dans r$switch
-      r[[paste0("switch",nb)]] <- input$Id1
+      r[[paste0("switch",nb)]] <- input$lock1
 
       # maj du choix des sites par classe
-      if(input$Id1) {
+      if(input$lock1) {
         # Si le SwitchInput est TRUE
         updatePickerInput(session, "choix1",
                           choices =  r$classe[[paste0("classe", nb)]],
@@ -147,8 +147,8 @@ mod_divClasse_server <- function(id,r){
      # tirage
       observeEvent(r$random, {
         if (isTRUE(r$random)){
-          updateSwitchInput(session,"Id1",disabled = FALSE,value = TRUE) # on active l"interrupteur
-          if(input$Id1){r[[paste0("site",nb)]] # on garde le meme tirage
+          updateSwitchInput(session,"lock1",disabled = FALSE,value = TRUE) # on active l"interrupteur
+          if(input$lock1){r[[paste0("site",nb)]] # on garde le meme tirage
 
           }
           else {# on tire un site au hasard pour la classe nb
@@ -162,7 +162,7 @@ mod_divClasse_server <- function(id,r){
       # récupération du dernier tirage
       observeEvent(r$last_random, {
         if (isTRUE(r$last_random)){
-          updateSwitchInput(session,"Id1",disabled = FALSE,value = TRUE) # on active l"interrupteur
+          updateSwitchInput(session,"lock1",disabled = FALSE,value = TRUE) # on active l"interrupteur
           r[[paste0("site",nb)]] <- r$hist[[paste0("Site",nb)]][1]
         }
 

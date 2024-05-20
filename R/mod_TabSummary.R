@@ -38,7 +38,7 @@ mod_TabSummary_ui <- function(id){
 
                        radioButtons(ns("bool1"), "Souhaitez vous regarder une partie de la population?", choices = c('Oui', 'Non'),selected = 'Non'),
                        shinyjs::hidden( # s'affiche uniquement lorsque l'on souhaite regarder une partie de la pop
-                         selectInput(ns("var_quali"), "Variable à discriminer:", choices = setNames(valeurs1, cles1)),
+                         selectInput(ns("var_quali"), "Variable à discriminer:", choices = setNames(valeurs2, cles2)),
 
                          ## choix de la modalité à regarder ##
                          selectInput(ns("cat1"), "Quel partie de la population souhaitez vous regarder?", choices = NULL)
