@@ -7,6 +7,8 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom stats setNames
+
 utils::globalVariables("Tonnage")
 
 
