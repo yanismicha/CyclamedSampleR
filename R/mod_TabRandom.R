@@ -17,22 +17,6 @@ mod_TabRandom_ui <- function(id){
   tabItem(tabName="rand",
           sidebarPanel(class = "custom-sidebar",
                        shinyjs::useShinyjs(),
-                       # boutton guide
-                       # tags$div(
-                       #    style = "float: right;", # Aligne à droite
-                       #    actionBttn(inputId = "guide2", label = "Guide", style = "unite", color = "primary")
-                       # ),
-                        #prettyRadioButtons(
-                       # inputId = "ref",label ="voulez vous un site de référence?", choices = c("Oui", "Non"),
-                       #icon = icon("check"), bigger = TRUE,status = "info",animation = "jelly"
-                       #),
-                       #conditionalPanel(
-                       # condition = "input.ref == 'Oui'",
-                       #pickerInput(inputId = "siteRef",label = "Choix du site:", choices = c("Site 1", "Site 2", "Site 3", "Site 4"),
-                       #           options = list(title = "Sites"),inline = TRUE)
-                       #),
-
-
                        # bouton de tirage
                        tags$div(
                          style = "text-align: center; margin-top: 100px;", # Alignement et décalage vers le haut
@@ -47,12 +31,21 @@ mod_TabRandom_ui <- function(id){
                        actionBttn(inputId = ns("popup_history"),label = "Historique",size="xs",style = "material-flat")
           ),
           mainPanel(class = "custom-main",
-            # popup information sur le code couleur utilisé pour les sites
-            HTML("<div style='display: flex; justify-content: center; align-items: center;'> <h1 style='font-weight: bold; margin-right: 200px; margin-left: 220px'>Sites</h1> <i id='info_icon' class='fa-solid fa-circle-info fa-beat-fade custom-icon' style='--fa-animation-duration: 4s; font-weight: bold;'></i> </div>"),
+            # Cadre titre avec popup
+            div(
+              style='display: flex; justify-content: center; align-items: center;',
+              h1(
+                style='font-weight: bold; margin-right: 200px; margin-left: 220px',
+                "Sites"
+              ),
+              # popup information sur le code couleur utilisé pour les sites
+              tags$i(id='info_icon',class='fa-solid fa-circle-info fa-beat-fade custom-icon',style='--fa-animation-duration: 4s; font-weight: bold;')
+            ),
             # cadres
             fluidRow(
               column(
                 width = 6,
+                # cadre d'un site tiré avec appel du module contenant les composants.
                 div(
                   class = "custom-div",
                   tags$h3(
@@ -106,6 +99,7 @@ mod_TabRandom_ui <- function(id){
                 ),
                 mod_divClasse_ui("cadre5")
             ),
+            # boutton permettant de charger le dernier tirage
             actionBttn(inputId = ns("load_last_random"),label = "Charger le dernier tirage",size="xs",style = "material-flat")
           )
   )
@@ -124,6 +118,8 @@ mod_TabRandom_server <- function(id,r){
 
       # on stocke la valeur du popup last_confirmation pour l'utiliser dans le module divClasse
       r$last_random <- input$confirmation_last_random
+
+      r$lock_all <- input$lock_all
 
       # on affiche le boutton de sauvegarde du tirage si tout les switchs sont a TRUE
       if(r$switch1&&r$switch2&&r$switch3&&r$switch4&&r$switch5){
@@ -232,7 +228,9 @@ mod_TabRandom_server <- function(id,r){
                                    scrollY = TRUE,
                                    language = list(
                                      info = "Tirages _START_ à _END_ sur un total de _TOTAL_ tirages",
-                                     lengthMenu = "Afficher _MENU_ tirages."
+                                     lengthMenu = "Afficher _MENU_ tirages.",
+                                     paginate = list(previous = 'Précédent', `next` = 'Suivant'),
+                                     search = "Recherche:"
                                    )
                     ),
                     editable = list(target = "row",disable = list(columns = c(0,1,2,3,4,5,6))))%>%
@@ -278,7 +276,7 @@ mod_TabRandom_server <- function(id,r){
       # Afficher le popup lorsque le bouton est cliqué
       showModal(modalDialog(
         title = "Historique des tirages",
-        HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 16px; --fa-animation-duration: 4s"></i>Double clique pour modifier &  <img src="www/ctrl.png" alt="Ctrl" style="width: 25px; height: 25px;"> + <img src="www/enter_key.png" alt="Entrée" style="width: 18px; height: 18px;"> pour enregistrer les modifications'),
+        HTML('<i class="fa-solid fa-circle-exclamation fa-flip" style="font-size: 16px; --fa-animation-duration: 4s"></i>Double clic pour modifier &  <img src="www/ctrl.png" alt="Ctrl" style="width: 25px; height: 25px;"> + <img src="www/enter_key.png" alt="Entrée" style="width: 18px; height: 18px;"> pour enregistrer les modifications'),
         DTOutput(ns("history")),
         size = "l",
         easyClose = TRUE, footer = tagList(
@@ -334,6 +332,7 @@ mod_TabRandom_server <- function(id,r){
                                         Site5=r$site5,
                                         Etat = ifelse(input$Id2=="Oui","Valide","En attente de validation"),
                                         Commentaire=input$Comment,
+                                        # par défaut l'année de caractérisation sera celle du dernier tirage.
                                         Caracterisation=r$hist$Caracterisation[1]),r$hist)
       write.csv(r$hist,"historique.csv",row.names = FALSE)
       historique <- read.csv("historique.csv")

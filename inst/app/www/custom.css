@@ -75,3 +75,43 @@
 
 }
 
+/* Styles pour les notifications d'erreurs */
+
+/*.shiny-notification.shiny-notification-type-error {
+                  background-color: #cccccc !important;
+                  color: #A52A2A;
+                  border: 1px solid #ddd;
+                  border-radius: 10px;
+                  padding: 20px;
+                  margin-top: 20px;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+
+}
+.shiny-notification.shiny-notification-type-message {
+                  background-color: #d4edda !important;
+                  color: #155724;
+                  border: 1px solid #c3e6cb;
+                  border-radius: 10px;
+                  padding: 20px;
+                  margin-top: 20px;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}*/
+
+
+
+
+/* Styles pour les dataTable */
+
+/* Pour la première ligne du tableau */
+table.dataTable thead th {
+                  background-color: #00a65a;
+                  color : white
+}
+
+/* Pour le style des bordures du tableau */
+table.dataTable thead th, table.dataTable tbody td {
+                  border: 1px solid #ddd;
+ }
+
+

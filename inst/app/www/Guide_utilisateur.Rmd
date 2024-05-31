@@ -1,27 +1,18 @@
 ---
 output:
+  html_document:
+    df_print: paged
   pdf_document:
-    extra_dependencies: ["float"]
-    keep_tex: FALSE
-header-includes:
-  \usepackage{float}
-  \usepackage{fancyhdr}
-  \usepackage{ocgx2}
-  \usepackage{hyperref}
-  \usepackage{xcolor}
-  \definecolor{steelblue}{RGB}{70, 130, 180}
-  \definecolor{lightblue}{RGB}{0,192,239}
-  \definecolor{darkblue}{RGB}{60,141,188}
-  \definecolor{steelred}{RGB}{221,75,57}
-  \usepackage{listings}
-  \lstset{frame=tb,language=R,keywordstyle=\color{blue},alsoletter={.}}
-  \pagestyle{fancy}
-  \usepackage[section]{placeins}
-  \definecolor{Grey}{rgb}{0.5, 0.5, 0.5}
-  \rhead{\color{Grey}CyclamedSampleR--Guide}
-  \lhead{\color{Grey} Y.M D.B R.S T.M}
-  \definecolor{DarkRed}{rgb}{0.64, 0.0, 0.0}
-  \setcounter{tocdepth}{2}
+    extra_dependencies: float
+    keep_tex: false
+  word_document: default
+header-includes: "\\usepackage{float} \\usepackage{fancyhdr} \\usepackage{ocgx2} \\usepackage{hyperref}
+  \\usepackage{xcolor} \\definecolor{steelblue}{RGB}{70, 130, 180} \\definecolor{lightblue}{RGB}{0,192,239}
+  \\definecolor{darkblue}{RGB}{60,141,188} \\definecolor{steelred}{RGB}{221,75,57}
+  \\usepackage{listings} \\lstset{frame=tb,language=R,keywordstyle=\\color{blue},alsoletter={.}}
+  \\pagestyle{fancy} \\usepackage[section]{placeins} \\definecolor{Grey}{rgb}{0.5,
+  0.5, 0.5} \\rhead{\\color{Grey}CyclamedSampleR--Guide} \\lhead{\\color{Grey} Y.M
+  D.B R.S T.M} \\definecolor{DarkRed}{rgb}{0.64, 0.0, 0.0} \\setcounter{tocdepth}{2}"
 ---
 
 ```{=tex}
@@ -76,11 +67,58 @@ Cette application a pour principale vocation de permettre la sélection de cinq 
 
 ## Les données:
 
-Dans cet onglet, vous retrouverez l'ensemble des sites dans un jeu de données optimisé pour la recherche. Il est possible de trier chaque site par différents facteurs tels que leurs tonnages ou leurs régions, mais également de faire une recherche spécifique si nécessaire. Un bouton est mis à disposition pour permettre l'ajout d'un nouveau site. Une fois appuyé, une fiche de renseignements doit être remplie afin d'ajouter un nouveau site.
+L'onglet "Les données" vous offre un accès rapide à un tableau complet des sites de grossistes répartiteurs, conçue pour une exploration et une recherche efficace dans l’ensemble.
 
-Attention, ajouter un site sur le jeu de données impacte directement les classes et la sélection de sites!
+Vous pouvez aisément trier les sites du tableau selon divers critères, tels que le tonnage ou la région, et lancer des recherches ciblées si besoin.
 
-Il est également possible de sélectionner un ou plusieurs sites et de les supprimer du jeu de données.
+
+### Utilisation des boutons de l’onglet
+
+- Bouton "**+**" (Ajouter une ligne dans le tableau/base de données) :\
+Ce bouton vous permet d'intégrer un nouveau site à la liste des grossistes répartiteurs. En cliquant dessus, un menu déroulant s'affiche, présentant les champs correspondants aux variables à renseigner. 
+ 
+Vous avez la possibilité d’ajouter une nouvelle « Maison mère » si besoin en effaçant dans la maison, en écrivant une nouvelle et en cliquant sur « **Add** ».
+
+Après avoir saisi les informations requises, cliquez sur "Nouvelle ligne" pour ajouter le site au tableau. 
+
+*Veuillez noter qu'il est impératif d'éviter les valeurs négatives pour les variables numériques telles que le tonnage et le nombre de rotations. De plus, l'ajout d'un site modifie immédiatement la classification et la sélection des sites dans la base de données.*
+
+
+- Bouton " **Éditer** " (Edition d’une ligne) :\
+Ce bouton permet de modifier les informations d'un site spécifique. Sélectionnez la ligne souhaitée pour afficher une fenêtre d'édition. Vous pouvez ainsi apporter des ajustements précis aux variables de la ligne concernée. Une fois les modifications effectuées, cliquez sur "Sauvegarder" pour enregistrer les changements. 
+
+Vous avez également la possibilité de double-cliquer sur une cellule spécifique du tableau pour une édition rapide.
+
+Assurez-vous de ne pas saisir de valeurs négatives pour le Tonnage et le nombre de rotations.
+
+- Bouton " **Supprimer** " (Suppression d’une ligne):\
+En sélectionnant une ou plusieurs lignes, ce bouton vous permet d'éliminer des sites de la liste. Utilisez-le avec précaution pour ne pas supprimer de données essentielles.
+
+**Points importants sur les boutons « Éditer » et « Supprimer »**:\
+Ces deux boutons sont interactifs et n’apparaissent que si vous cliquez sur une (max 1 pour l’édition) ou plusieurs (>= 1 pour la suppression).
+
+- Bouton "**Importer de nouvelles données**" (Import un fichier) :\
+Ce bouton ouvre votre explorateur de fichiers pour vous permettre d'importer un nouveau jeu de données. Les informations importées remplaceront les données existantes. Le fichier importer doit être sous le format .csv.
+
+**Points importants sur les variables/colonnes du fichier .csv importer** :\
+-	Le fichier doit contenir exactement 6 variables/colonnes.
+-	Garder les mêmes noms des variables/colonnes.
+-	Les variables doivent être organisées successivement de la première à la sixième la sorte *"Region", "Maison.Mere", "Site", "Tonnages.DIM", "Nbre.de.rotation", "Compacteur"*
+-	Les variables doivent contenir au moins un mot clé comme spécifié dans le graphique ci-dessous.
+
+Voici un ***fichier type*** du format des colonnes/variables à retrouver dans le .csv importé :\
+
+![](fichier_type.svg){width=200px}
+**Notes sur la nature des valeurs (type) des variables/colonnesdu tableau** :\
+- Region :"Chaine de caractères" (" Character"/ "String")
+- "Maison.Mere" :"Chaine de caractères" (" Character"/ "String")
+- "Site":"Chaine de caractères" (" Character"/ "String")
+- "Tonnages.DIM":"Numérique" ("numeric"/"double")
+- "Nbre.de.rotation":"Entier"("Integer")
+- "Compacteur":"Entier"("Integer")
+
+- Bouton "**Sauvegarder**" \
+Utilisez ce bouton pour télécharger le tableau des grossistes répartiteurs au format .CSV, que vous pourrez ensuite enregistrer à l'emplacement de votre choix. Cette fonction est particulièrement utile pour conserver une trace des modifications apportées.
 
 ## Sélection des sites:
 
